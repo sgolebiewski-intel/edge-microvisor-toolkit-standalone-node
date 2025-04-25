@@ -11,7 +11,7 @@ all: lint mdlint build
 
 
 #### Python venv Target ####
-VENV_DIR := venv_ven
+VENV_DIR := venv_standalonenode
 
 $(VENV_DIR): requirements.txt ## Create Python venv
 	python3 -m venv $@ ;\

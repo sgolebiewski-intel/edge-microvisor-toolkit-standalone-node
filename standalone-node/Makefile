@@ -17,7 +17,7 @@ CURRENT_UID := $(shell id -u)
 CURRENT_GID := $(shell id -g)
 
 # Project variables
-PROJECT_NAME := venv_standalonenode
+PROJECT_NAME := standalonenode
 BINARY_NAME  := $(PROJECT_NAME)
 
 # Code versions, tags, and so on
@@ -86,15 +86,6 @@ clean:
 list: 
 	@# Help: displays make targets
 	help
-
-help:	
-	@printf "%-20s %s\n" "Target" "Description"
-	@printf "%-20s %s\n" "------" "-----------"
-	@make -pqR : 2>/dev/null \
-        | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' \
-        | sort \
-        | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' \
-        | xargs -I _ sh -c 'printf "%-20s " _; make _ -nB | (grep -i "^# Help:" || echo "") | tail -1 | sed "s/^# Help: //g"'
 
 fuzz: $(VENV_NAME)
 	@# Help: Runs fuzz testing for 60 seconds
