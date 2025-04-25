@@ -4,7 +4,10 @@
 # SPDX-License-Identifier: LicenseRef-Intel
 
 .DEFAULT_GOAL := help
-.PHONY: build test lint license help generate fuzz
+.PHONY: build lint license help fuzz
+
+# Optionally include tool version checks, not used in Docker builds
+TOOL_VERSION_CHECK ?= 0
 
 ##### Variables #####
 
@@ -14,8 +17,8 @@ CURRENT_UID := $(shell id -u)
 CURRENT_GID := $(shell id -g)
 
 # Project variables
-PROJECT_NAME := std-edgenode
-BINARY_NAME  := std-edgenode
+PROJECT_NAME := venv_standalonenode
+BINARY_NAME  := $(PROJECT_NAME)
 
 # Code versions, tags, and so on
 VERSION       ?= $(shell cat VERSION)
@@ -23,20 +26,14 @@ VERSION_MAJOR ?= $(shell cut -c 1 VERSION)
 IMG_NAME      ?= ${PROJECT_NAME}
 IMG_VERSION   ?= $(VERSION)
 GIT_COMMIT    ?= $(shell git rev-parse HEAD)
-DOCKER_ENV              := DOCKER_BUILDKIT=1
-DOCKER_REGISTRY         ?= amr-registry.caas.intel.com
-DOCKER_REPOSITORY       ?= one-intel-edge/maestro-i
-DOCKER_TAG              := ${DOCKER_REGISTRY}/${DOCKER_REPOSITORY}/${IMG_NAME}
 
-# Create the virtualenv with python tools installed
-VENV_NAME = venv_stden
 
-$(VENV_NAME): requirements.txt
-	echo "Creating virtualenv $@"
-	python3 -m venv $@;\
-	. ./$@/bin/activate; set -u;\
-	python3 -m pip install --upgrade pip;\
-	python3 -m pip install -r requirements.txt
+# Yamllint variables
+YAML_FILES           := $(shell find . -path './venv_standalonenode' -path './vendor' -prune -o -type f \( -name '*.yaml' -o -name '*.yml' \) -print )
+YAML_IGNORE          := vendor, .github/workflows
+
+# Include shared makefile
+include ../common.mk
 
 all: 
 	@# Help: Runs build, lint, test stages
@@ -56,6 +53,12 @@ image:
 	cd host_os && ./download_tmv.sh && cd ..
 	@echo "---END MAKEFILE Build---"
 
+docker-build: 
+	@# Help: Runs docker-build stage
+	@echo "---MAKEFILE BUILD---"
+	echo $@
+	@echo "---END MAKEFILE Build---"
+
 license: $(VENV_NAME) ## Check licensing with the reuse tool.
 	. ./$</bin/activate; set -u;\
 	reuse --version;\
@@ -69,24 +72,6 @@ lint: $(VENV_NAME)
 	yamllint --version;\
 	yamllint $(YAML_FILES)
 	@echo "---END MAKEFILE LINT---"
-
-#lint:
-#	@# Help: Runs lint stage
-#	@echo "---MAKEFILE LINT---"
-#	echo $@
-#	@echo "---END MAKEFILE LINT---"
-
-test:
-	@# Help: Runs test stage
-	@echo "---MAKEFILE TEST---"
-	echo $@
-	@echo "---END MAKEFILE TEST---"
-	
-coverage:
-	@# Help: Runs coverage stage
-	@echo "---MAKEFILE COVERAGE---"
-	echo $@
-	@echo "---END MAKEFILE COVERAGE---"
 
 clean:
 	@# Clean: Remove build files
