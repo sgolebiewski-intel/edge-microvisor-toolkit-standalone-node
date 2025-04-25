@@ -1,4 +1,7 @@
 ---
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
 # Attention, this is a template that is run through envsubst
 # but with a specific list of variables to replace. Thus:
 # - HOOK_VERSION: ${HOOK_VERSION} (a simple 1.2.3 string, no 'v')

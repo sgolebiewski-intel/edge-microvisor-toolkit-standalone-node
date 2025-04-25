@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
 
 function parse_command_line_arguments() {
 	declare -A -g CLI_PARSED_CMDLINE_PARAMS=()

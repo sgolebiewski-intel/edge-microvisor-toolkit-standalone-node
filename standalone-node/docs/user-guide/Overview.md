@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
 # Edge Microvisor Toolkit Standalone Node
 
 Designed to enable Edge AI applications evaluation on Intel platforms.

@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
 
 # This script is used to build container images that are embedded in HookOS.
 # When HookOS boots up, the DinD container will have all the images in its cache.

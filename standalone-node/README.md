@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
 ### Pre-conditions for Build Environment
 
 Ensure that Docker is installed and all necessary settings (such as proxy configurations) are properly configured.  

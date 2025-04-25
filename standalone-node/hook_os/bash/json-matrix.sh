@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
 
 ## Implements JSON generation for GitHub Actions matrixes.
 ## nb: this is an example of what not to use bash for.

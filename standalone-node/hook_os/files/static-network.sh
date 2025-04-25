@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
 
 # This script is intended to be run on the HookOS/Linuxkit host so it must use /bin/sh.
 # No other shells are available on the host.

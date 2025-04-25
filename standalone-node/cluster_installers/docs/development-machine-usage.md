@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
 # Using SEN from development machine
 
 This guide provides information on how the developer machine can be used to interact with the Standalone Edge Node. This guide does not provide detail on how the networking should be achieved to access the Edge Node - it is assumed that the development machine and Edge Node are on the same network and there is no obstacles in communication.
