@@ -19,8 +19,8 @@ source bash/kernel/kernel_default.sh
 source bash/kernel/kernel_armbian.sh
 
 ### Initialize the command-line handling. This should behave similar to `make`; PARAM=value pairs are accepted in any order mixed with non-param arguments.
-declare -A -g CLI_PARSED_CMDLINE_PARAMS=()
-declare -a -g CLI_NON_PARAM_ARGS=()
+# declare -A -g CLI_PARSED_CMDLINE_PARAMS=()
+# declare -a -g CLI_NON_PARAM_ARGS=()
 parse_command_line_arguments "${@}" # which fills the above vars & exports the key=value pairs from cmdline into environment
 # From here on, no more $1 ${1} or similar. We've parsed it all into CLI_PARSED_CMDLINE_PARAMS (already exported in environment) or CLI_NON_PARAM_ARGS
 
@@ -31,7 +31,7 @@ declare -g HOOK_LK_CONTAINERS_OCI_BASE="${HOOK_LK_CONTAINERS_OCI_BASE:-"quay.io/
 declare -g SKOPEO_IMAGE="${SKOPEO_IMAGE:-"quay.io/skopeo/stable:latest"}"
 
 # See https://github.com/linuxkit/linuxkit/releases
-declare -g -r LINUXKIT_VERSION_DEFAULT="1.5.0" # LinuxKit version to use by default; each flavor can set its own too
+# declare -g -r LINUXKIT_VERSION_DEFAULT="1.5.0" # LinuxKit version to use by default; each flavor can set its own too
 
 # Directory to use for storing downloaded artifacts: LinuxKit binary, shellcheck binary, etc.
 declare -g -r CACHE_DIR="${CACHE_DIR:-"cache"}"

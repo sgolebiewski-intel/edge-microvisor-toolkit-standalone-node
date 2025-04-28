@@ -98,12 +98,12 @@ docker build  -t debian:12.10 .
 
 if [ $? -ne 0 ]; then
     echo "Debian image generation failed"
-    popd > /dev/null
+    popd > /dev/null || exit 1
     exit 1
 else
     echo "Debian image build success"
 fi
-popd
+popd || exit 1
 
 }
 
