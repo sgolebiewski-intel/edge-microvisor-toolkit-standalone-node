@@ -27,9 +27,8 @@ IMG_NAME      ?= ${PROJECT_NAME}
 IMG_VERSION   ?= $(VERSION)
 GIT_COMMIT    ?= $(shell git rev-parse HEAD)
 
-
 # Yamllint variables
-YAML_FILES           := $(shell find . -path './venv_standalonenode' -path './vendor' -prune -o -type f \( -name '*.yaml' -o -name '*.yml' \) -print )
+YAML_FILES           := $(shell find . -path './venv_$(PROJECT_NAME)' -path './vendor' -prune -o -type f \( -name '*.yaml' -o -name '*.yml' \) -print )
 YAML_IGNORE          := vendor, .github/workflows
 
 # Include shared makefile
@@ -58,20 +57,6 @@ docker-build:
 	@echo "---MAKEFILE BUILD---"
 	echo $@
 	@echo "---END MAKEFILE Build---"
-
-license: $(VENV_NAME) ## Check licensing with the reuse tool.
-	. ./$</bin/activate; set -u;\
-	reuse --version;\
-        reuse download --all
-	reuse --root . lint
-
-YAML_FILES := $(shell find . -path './.github' -prune -o -type f -name "*.yaml" -print )
-
-lint: $(VENV_NAME)
-	@. $(VENV_NAME)/bin/activate; flake8 --exclude=venv_stden
-	yamllint --version;\
-	yamllint $(YAML_FILES)
-	@echo "---END MAKEFILE LINT---"
 
 clean:
 	@# Clean: Remove build files
