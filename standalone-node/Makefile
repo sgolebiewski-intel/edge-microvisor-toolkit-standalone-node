@@ -38,6 +38,10 @@ all:
 	@# Help: Runs build, lint, test stages
 	build lint test 	
 
+lint: license shellcheck yamllint mdlint
+	@$(MAKE) yaml-syntax-lint YAML_FILES="$(YAML_FILES)" YAML_IGNORE="$(YAML_IGNORE)"
+	@$(MAKE) rx-yaml-input-validate
+
 build:
 	@# Help: Runs build stage
 	@echo "---MAKEFILE ISO BUILD---"
