@@ -4,7 +4,7 @@
 # Dockerfile to build linuxkit/runc for linuxkit
 FROM linuxkit/alpine:146f540f25cd92ec8ff0c5b0c98342a9a95e479e as alpine
 RUN \
-  apk add \
+  apk add --no-cache \
   bash \
   gcc \
   git \
@@ -17,6 +17,8 @@ RUN \
   && true
 ENV GOPATH=/go PATH=$PATH:/go/bin GO111MODULE=off
 ENV RUNC_COMMIT=v1.1.12
+# Add non-root user
+RUN adduser -D -u 1000 runcuser
 RUN mkdir -p $GOPATH/src/github.com/opencontainers && \
   cd $GOPATH/src/github.com/opencontainers && \
   git clone https://github.com/opencontainers/runc.git
@@ -36,3 +38,7 @@ COPY --from=alpine /etc/init.d/ /etc/init.d/
 COPY --from=alpine /etc/shutdown.d/ /etc/shutdown.d/
 COPY --from=alpine /etc/apk /etc/apk/
 COPY --from=alpine /lib/apk /lib/apk/
+COPY --from=alpine /etc/passwd /etc/passwd
+COPY --from=alpine /etc/group /etc/group
+
+USER runcuser

@@ -13,7 +13,7 @@ ENV CONTAINERD_REPO=https://github.com/containerd/containerd.git
 ENV CONTAINERD_COMMIT=v1.7.15
 ENV NERDCTL_VERSION=1.7.6
 ENV GOPATH=/go
-RUN apk add go git
+RUN apk add --no-cache go git
 RUN mkdir -p $GOPATH/src/github.com/containerd && \
   cd $GOPATH/src/github.com/containerd && \
   git clone https://github.com/containerd/containerd.git && \
@@ -32,6 +32,8 @@ RUN cp bin/containerd bin/ctr bin/containerd-shim bin/containerd-shim-runc-v2 /u
 RUN strip /usr/bin/containerd /usr/bin/ctr /usr/bin/containerd-shim /usr/bin/containerd-shim-runc-v2
 RUN mkdir -p /opt/containerd
 
+# Create a non-root user
+RUN adduser -D -u 10001 containerduser
 FROM scratch as containerd-dev
 ENTRYPOINT []
 WORKDIR /
@@ -39,11 +41,13 @@ COPY --from=builder /usr/bin/containerd /usr/bin/ctr /usr/bin/containerd-shim /u
 COPY --from=builder /go/src/github.com/containerd/containerd /go/src/github.com/containerd/containerd
 COPY --from=builder /usr/local/bin/nerdctl /usr/bin/
 COPY --from=builder /opt/containerd/ /opt/containerd/
+COPY --from=builder /etc/passwd /etc/passwd
+USER containerduser
 
 # Dockerfile to build linuxkit/containerd for linuxkit
 FROM linuxkit/alpine:146f540f25cd92ec8ff0c5b0c98342a9a95e479e as alpine
 
-RUN apk add tzdata binutils
+RUN apk add --no-cache tzdata binutils
 RUN mkdir -p /etc/init.d && ln -s /usr/bin/service /etc/init.d/020-containerd
 
 FROM containerd-dev
@@ -59,3 +63,5 @@ COPY --from=alpine /etc/init.d/ /etc/init.d/
 COPY etc etc/
 COPY --from=alpine /etc/apk /etc/apk/
 COPY --from=alpine /lib/apk /lib/apk/
+COPY --from=containerd-dev /etc/passwd /etc/passwd
+USER containerduser

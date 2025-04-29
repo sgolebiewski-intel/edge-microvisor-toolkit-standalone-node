@@ -76,6 +76,10 @@ FROM kernel-with-config AS kernel-build
 
 ARG KERNEL_OUTPUT_IMAGE
 
+# Create a non-root user and switch to it
+RUN useradd -m builder
+USER builder
+
 RUN mkdir /out
 
 RUN sed -i 's/#define COMMAND_LINE_SIZE 2048/#define COMMAND_LINE_SIZE 4096/' arch/x86/include/asm/setup.h
