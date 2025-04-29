@@ -38,11 +38,18 @@ all:
 	@# Help: Runs build, lint, test stages
 	build lint test 	
 
+configure:
+	echo 'http_proxy=$(http_proxy)' > config
+	echo 'https_proxy=$(http_proxy)' >> config
+	echo 'ftp_proxy=$(ftp_proxy)' >> config
+	echo 'socks_proxy=$(socks_proxy)' >> config
+	echo 'no_proxy=$(no_proxy)' >> config
+
 lint: license shellcheck yamllint mdlint
 	@$(MAKE) yaml-syntax-lint YAML_FILES="$(YAML_FILES)" YAML_IGNORE="$(YAML_IGNORE)"
 	@$(MAKE) rx-yaml-input-validate
 
-build:
+build: configure
 	@# Help: Runs build stage
 	@echo "---MAKEFILE ISO BUILD---"
 	echo $@
