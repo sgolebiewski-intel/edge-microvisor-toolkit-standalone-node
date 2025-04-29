@@ -51,12 +51,10 @@ lint: license shellcheck yamllint mdlint
 
 build: configure
 	@# Help: Runs build stage
-	@echo "---MAKEFILE ISO BUILD---" > build.log
-	lsb_release -a >> build.log 2>&1
-	echo $@ >> build.log
-	cd installation_scripts && ./build-hook-os-iso.sh >> ../build.log 2>&1 && cd ..
-	@echo "---END MAKEFILE Build---" >> build.log
-	@cat build.log
+	@echo "---MAKEFILE ISO BUILD---"
+	echo $@
+	cd installation_scripts && ./build-hook-os-iso.sh && cd ..
+	@echo "---END MAKEFILE Build---"
 	
 image:
 	@# Help: Runs build stage
