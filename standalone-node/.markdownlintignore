@@ -4,7 +4,7 @@
 out/
 vendor/
 venv_standalonenode/
-cluster_installers/docs/development-machine-usage.md
+cluster_installers/docs/
 cluster_installers/readme.md
 docs/user-guide/Get-Started-Guide.md
 docs/user-guide/Overview.md
