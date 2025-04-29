@@ -54,8 +54,8 @@ license: $(VENV_NAME) ## Check licensing with the reuse tool
 
 yamllint: $(VENV_NAME) ## lint YAML files
 	. ./$</bin/activate; set -u ;\
-  yamllint --version ;\
-  yamllint -d '{extends: default, rules: {line-length: {max: 250}, truthy: disable}, ignore: [$(YAML_IGNORE)]}' -s $(YAML_FILES)
+	yamllint --version ;\
+	yamllint .
 
 mdlint: ## link MD files
 	markdownlint --version ;\
