@@ -69,6 +69,12 @@ docker-build:
 	echo $@
 	@echo "---END MAKEFILE Build---"
 
+dependency-check:
+	@# Help: Runs dependency-check stage
+	@echo "---MAKEFILE TEST---"
+	echo $@
+	@echo "---END MAKEFILE TEST---"
+
 clean:
 	@# Clean: Remove build files
 	@echo "---MAKEFILE CLEAN---"
