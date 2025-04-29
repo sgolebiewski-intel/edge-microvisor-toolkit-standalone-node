@@ -39,11 +39,11 @@ all:
 	build lint test 	
 
 configure:
-	echo 'http_proxy=$(http_proxy)' > config
-	echo 'https_proxy=$(http_proxy)' >> config
-	echo 'ftp_proxy=$(ftp_proxy)' >> config
-	echo 'socks_proxy=$(socks_proxy)' >> config
-	echo 'no_proxy=$(no_proxy)' >> config
+	echo 'http_proxy=$(http_proxy)' > hook_os/config
+	echo 'https_proxy=$(http_proxy)' >> hook_os/config
+	echo 'ftp_proxy=$(ftp_proxy)' >> hook_os/config
+	echo 'socks_proxy=$(socks_proxy)' >> hook_os/config
+	echo 'no_proxy=$(no_proxy)' >> hook_os/config
 
 lint: license shellcheck yamllint mdlint
 	@$(MAKE) yaml-syntax-lint YAML_FILES="$(YAML_FILES)" YAML_IGNORE="$(YAML_IGNORE)"
