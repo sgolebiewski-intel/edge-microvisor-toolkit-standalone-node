@@ -5,6 +5,8 @@
 extends: default
 
 ignore: |
+  cluster_installers/extensions/
+  cluster_installers/extensions-templates/
   vendor/*
   .github/workflows/*
 
