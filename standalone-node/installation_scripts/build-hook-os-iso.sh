@@ -178,8 +178,9 @@ if [ "$?" -ne 0 ]; then
 else
     echo "Build pkgs successful"
 fi
+echo "Before copying sen rke2 packages"
 cp  sen-rke2-package.tar.gz  ../installation_scripts/out/
-
+echo "After copying sen rke2 packages"
 if [ "$?" -ne 0 ]; then
     echo "Build pkgs && Images copy failed to out directory, please check!!"
     popd
