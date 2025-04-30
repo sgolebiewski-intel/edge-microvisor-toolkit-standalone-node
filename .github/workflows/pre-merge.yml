@@ -60,17 +60,6 @@ jobs:
         with:
           key: venv-${{ runner.os }}-${{ steps.setup_python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
           path: venv_infra
-      - name: Check disk usage before
-        run: |
-          df -h
-      - name: Clean up preinstalled tools
-        run: |
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/hostedtoolcache
-          sudo rm -rf /usr/share/dotnet
-      - name: Check disk usage after
-        run: |
-          df -h
       - name: Run mdlint
         run: make mdlint
       - name: Run license check
