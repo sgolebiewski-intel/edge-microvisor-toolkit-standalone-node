@@ -178,6 +178,9 @@ if [ "$?" -ne 0 ]; then
 else
     echo "Build pkgs successful"
 fi
+echo "Current directory: $(pwd)"
+echo "File exists: $(ls sen-rke2-package.tar.gz)"
+echo "Target directory exists: $(ls ../installation_scripts/out/)"
 echo "Before copying sen rke2 packages"
 cp  sen-rke2-package.tar.gz  ../installation_scripts/out/
 echo "After copying sen rke2 packages"
