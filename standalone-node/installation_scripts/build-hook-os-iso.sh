@@ -178,6 +178,8 @@ if [ "$?" -ne 0 ]; then
 else
     echo "Build pkgs successful"
 fi
+echo "Disk space usage after building rke2 packages:"
+df -h
 echo "Current directory: $(pwd)"
 echo "File exists: $(ls sen-rke2-package.tar.gz)"
 echo "Target directory exists: $(ls ../installation_scripts/out/)"
@@ -207,6 +209,8 @@ popd
 
 main(){
 
+echo "Main func: Disk space usage before build:"
+df -h
 build-hook-os
 
 download-tvm
