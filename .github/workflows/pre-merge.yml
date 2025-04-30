@@ -65,9 +65,9 @@ jobs:
           df -h
       - name: Clean up preinstalled tools
         run: |
-          rm -rf /usr/local/lib/android
-          rm -rf /opt/hostedtoolcache
-          rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/hostedtoolcache
+          sudo rm -rf /usr/share/dotnet
       - name: Check disk usage after
         run: |
           df -h
