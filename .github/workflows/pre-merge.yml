@@ -42,13 +42,18 @@ jobs:
       - name: "Artifact Folder or Files"
         id: arti-path
         run: |
-          if [ "$filtered_projects" == '["vm-provisioning"]' ]; then
+          if [ "$filtered_projects" == '["standalone-node"]' ]; then
             echo "artifact_path<<EOF" >> $GITHUB_OUTPUT
-            echo "vm-provisioning/out/" >> $GITHUB_OUTPUT
+            echo "standalone-node/out/" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
           else
             echo "artifact_path=empty" >> $GITHUB_OUTPUT
           fi
+      - name: Clean up preinstalled tools
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/hostedtoolcache
+          sudo rm -rf /usr/share/dotnet
   pre-merge-root:
     needs: pre-checks
     if: ${{ contains(needs.pre-checks.outputs.other_changed_projects, '.github') || contains(needs.pre-checks.outputs.other_changed_projects, '.reuse') || contains(needs.pre-checks.outputs.other_changed_projects, 'LICENSES') || contains(needs.pre-checks.outputs.other_changed_projects, '""' ) || contains(needs.pre-checks.outputs.other_changed_projects, 'tools')}}
