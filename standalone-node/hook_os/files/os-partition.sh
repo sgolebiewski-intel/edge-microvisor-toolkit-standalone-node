@@ -150,6 +150,7 @@ else
     mount --bind /proc /mnt/proc
     mount --bind /sys /mnt/sys
     echo "UUID=$uuid swap swap default 0 2" >> /mnt/etc/fstab
+    #shellcheck disable=SC2002
     status=$(cat "/mnt/etc/fstab" | grep -c "swap")
     if [ "$status" -ge 1 ]; then
         echo "Successfuly created the swap partition for the disk $disk"
@@ -210,6 +211,7 @@ secondary_rootfs_disk_num=$((data_part_number+1))
 if echo "$disk" | grep -q "nvme"; then
     secondary_rootfs_disk="p${secondary_rootfs_disk_num}"
 else
+    # shellcheck disable=SC2034
     secondary_rootfs_disk="${secondary_rootfs_disk_num}"
 fi
 

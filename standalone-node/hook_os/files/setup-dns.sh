@@ -24,7 +24,7 @@ shift $((OPTIND - 1))
 conf="${ROOT}resolv.conf"
 
 if [ -f "$conf" ] ; then
-        domain=$(awk '/^domain/ {print $2}' $conf)
+        domain=$(awk '/^domain/ {print $2}' "$conf")
         dns=$(awk '/^nameserver/ {printf "%s ",$2}' "$conf")
 elif fqdn="$(get_fqdn)" && [ -n "$fqdn" ]; then
         domain="$fqdn"

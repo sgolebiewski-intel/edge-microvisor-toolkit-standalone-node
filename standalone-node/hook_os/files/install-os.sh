@@ -8,6 +8,7 @@ set -x
 ### Global Variables ###
 usb_disk=""
 usb_devices=""
+# shellcheck disable=SC2034
 usb_count=""
 blk_devices=""
 os_disk=""
@@ -51,7 +52,7 @@ check_mnt_mount_exist() {
 
 # Wait for a few seconds for USB emulation as hook OS boots fast
 detect_usb() {
-    for attempt in {1..15}; do
+    for _ in {1..15}; do
         usb_devices=$(lsblk -dn -o NAME,TYPE,SIZE,RM | awk '$2 == "disk" && $4 == 1 && $3 != "0B" {print $1}')
         for disk_name in $usb_devices; do
             # Bootable USB has 6 partitions,ignore other disks
@@ -198,6 +199,7 @@ set -e
 useradd -m -s /bin/bash $user_name && echo "$user_name:$passwd" | chpasswd && echo '$user_name ALL=(ALL) NOPASSWD:ALL' | tee /etc/sudoers.d/$user_name
 
 EOT
+    # shellcheck disable=SC2181
     if [ "$?" -eq 0 ]; then
         success "Successfully created the user"
         umount /mnt
@@ -330,6 +332,7 @@ EOF
         #exit the su -$user_name
         exit
 EOT
+            # shellcheck disable=SC2181
             if [ "$?" -eq 0 ]; then
                 success "SSH-KEY Configuration Success"
             else

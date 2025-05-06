@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 #set -x
+# shellcheck source=installation_scripts/config-file
 source config-file
 
 working_dir=$(pwd)

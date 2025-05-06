@@ -38,12 +38,15 @@ singlehdd_lvm_partition=9
 
 #####################################################################################
 # Partitions in %
+# shellcheck disable=SC2034
 swap_space_start=91
 
 # Size in MBs
 tep_size=14336
 reserved_size=5120
+# shellcheck disable=SC2034
 boot_size=5120600
+# shellcheck disable=SC2034
 bare_min_rootfs_size=25
 rootfs_size=3584
 rootfs_hashmap_size=100
@@ -53,6 +56,7 @@ rootfs_roothash_size=50
 #####################################################################################
 #Global var which is updated
 single_hdd=-1
+# shellcheck disable=SC2034
 check_all_disks=1
 #####################################################################################
 #####################################################################################
@@ -92,8 +96,7 @@ check_return_value() {
 get_dest_disk()
 {
     disk_device=""
-
-    list_block_devices=($(lsblk -o NAME,TYPE,SIZE,RM | awk '$2 == "disk" && ($1 ~ /^sd/ || $1 ~ /^nvme/) && $3 != "0B" && $4 == 0 {print $1}'))
+    mapfile -t list_block_devices < <(lsblk -o NAME,TYPE,SIZE,RM | awk '$2 == "disk" && ($1 ~ /^sd/ || $1 ~ /^nvme/) && $3 != "0B" && $4 == 0 {print $1}')
     for block_dev in "${list_block_devices[@]}";
     do
 	#if there were any problems when the ubuntu was streamed.
@@ -121,11 +124,10 @@ get_dest_disk()
 #####################################################################################
 # set the single_hdd var to 0 if this is a single HDD else it will keep it unchanged at -1
 is_single_hdd() {
-    ret=-1
     # list_block_devices=($(lsblk -o NAME,TYPE | grep -i disk  | awk  '$1 ~ /sd*|nvme*/ {print $1}'))
     ## $3 represents the block device size. if 0 omit
     ## $4 is set to 1 if the device is removable
-    list_block_devices=($(lsblk -o NAME,TYPE,SIZE,RM | awk '$2 == "disk" && ($1 ~ /^sd/ || $1 ~ /^nvme/) && $3 != "0B" && $4 == 0 {print $1}'))
+    mapfile -t list_block_devices < <(lsblk -o NAME,TYPE,SIZE,RM | awk '$2 == "disk" && ($1 ~ /^sd/ || $1 ~ /^nvme/) && $3 != "0B" && $4 == 0 {print $1}')
 
     count=${#list_block_devices[@]}
 
@@ -220,6 +222,7 @@ make_partition() {
     #####
     # logging needed to understand the block splits
     echo "DEST_DISK ${DEST_DISK}"
+    # shellcheck disable=SC2154
     echo "rootfs_partition     $rootfs_partition         rootfs_end           ${rootfs_end}MB"
     echo "root_hashmap_a_start ${root_hashmap_a_start}MB root_hashmap_b_start ${root_hashmap_b_start}MB"
     echo "root_hashmap_b_start ${root_hashmap_b_start}MB rootfs_b_start       ${rootfs_b_start}MB"
@@ -313,7 +316,7 @@ create_single_hdd_lvmg() {
 # the output of this function is to update the global var update_sector if needed
 block_disk_phy_block_disk() {
     # list_block_devices=($(lsblk -o NAME,TYPE | grep -i disk  | awk  '$1 ~ /sd*|nvme*/ {print $1}'))
-
+    # shellcheck disable=SC2207
     list_block_devices=($(lsblk -o NAME,TYPE,SIZE,RM | grep -i disk | awk '$1 ~ /sd*|nvme*/ {if ($3 !="0B" && $4 ==0)  {print $1}}'))
     list_of_lvmg_part=''
     block_size_4k=0
@@ -413,7 +416,7 @@ partition_other_devices() {
 
     ## $3 represents the block device size. if 0 omit
     ## $4 is set to 1 if the device is removable
-    list_block_devices=($(lsblk -o NAME,TYPE,SIZE,RM | grep -i disk | awk '$1 ~ /sd*|nvme*/ {if ($3 !="0B" && $4 ==0)  {print $1}}'))
+    mapfile -t list_block_devices < <(lsblk -o NAME,TYPE,SIZE,RM | grep -i disk | awk '$1 ~ /sd*|nvme*/ {if ($3 !="0B" && $4 ==0)  {print $1}}')
     list_of_lvmg_part=''
     for block_dev in "${list_block_devices[@]}";
     do
@@ -423,12 +426,14 @@ partition_other_devices() {
 	fi
 
 	#Delete all partitions on that disk to make it ready for luks with 1 partition only
+    # shellcheck disable=SC2034
 	line_num=$(parted -s "/dev/${block_dev}" print | awk '$1 == "Number" { print NR }')
 	partition_num=$(parted -s "/dev/${block_dev}" print | awk 'NR > $line_num { print $1}')
 	for part in $partition_num;
 	do
 	    echo "partition in $disk $part will be deleted"
 	    rm_part=$(parted -s "/dev/${block_dev}" rm "$part")
+        echo "Removed partition output: $rm_part"
 	done
 
 	# new partition
@@ -589,7 +594,7 @@ EOT
 
 
     #cleanup of mounts
-    mount_points=($(grep -i "/mnt"  /proc/mounts | awk '{print $2}' | sort -nr))
+    mapfile -t mount_points < <(grep -i "/mnt" /proc/mounts | awk '{print $2}' | sort -nr)
     for mounted_dir in "${mount_points[@]}";
     do
 	umount "$mounted_dir"
