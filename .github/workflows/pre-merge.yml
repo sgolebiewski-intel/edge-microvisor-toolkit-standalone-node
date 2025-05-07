@@ -38,7 +38,6 @@ jobs:
 
           echo "filtered_projects=$filtered_projects" >> $GITHUB_OUTPUT
           echo "other_changed_projects=$other_changed_projects" >> $GITHUB_OUTPUT
-          echo "filtered_projects: $filtered_projects"
   pre-merge-root:
     needs: pre-checks
     if: ${{ contains(needs.pre-checks.outputs.other_changed_projects, '.github') || contains(needs.pre-checks.outputs.other_changed_projects, '.reuse') || contains(needs.pre-checks.outputs.other_changed_projects, 'LICENSES') || contains(needs.pre-checks.outputs.other_changed_projects, '""')}}
@@ -64,17 +63,6 @@ jobs:
         run: make mdlint
       - name: Run license check
         run: make license
-  pre-merge-debug:
-    needs: pre-checks
-    if: ${{ needs.pre-checks.outputs.filtered_projects != '[]' && needs.pre-checks.outputs.filtered_projects != '' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        project_folder: ${{ fromJson(needs.pre-checks.outputs.filtered_projects) }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print matrix.project_folder
-        run: echo "matrix.project_folder = '${{ matrix.project_folder }}'"
   pre-merge-pipeline:
     needs: pre-checks
     if: ${{ needs.pre-checks.outputs.filtered_projects != '[]' }}
