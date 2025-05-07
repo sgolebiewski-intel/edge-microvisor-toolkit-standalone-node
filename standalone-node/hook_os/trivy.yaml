@@ -3,4 +3,4 @@
 
 # Same as '--ignorefile'
 # Default is '.trivyignore'
-ignorefile: ./standalone-node/hook_os/.trivyignore
+ignorefile: standalone-node/hook_os/.trivyignore
