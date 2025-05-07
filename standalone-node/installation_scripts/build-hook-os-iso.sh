@@ -179,17 +179,16 @@ echo "File exists: $(ls sen-rke2-package.tar.gz)"
 echo "Target directory exists: $(ls ../installation_scripts/out/)"
 if [ ! -f sen-rke2-package.tar.gz ]; then
     echo "File sen-rke2-package.tar.gz does not exist, please check!"
-    popd
+    popd || exit 1
     exit 1
 fi
 if [ ! -d ../installation_scripts/out/ ]; then
     echo "Directory ../installation_scripts/out/ does not exist, please check!"
-    popd
+    popd || exit 1
     exit 1
 fi
 echo "Before copying sen rke2 packages"
-cp  sen-rke2-package.tar.gz  ../installation_scripts/out/
-if [ "$?" -ne 0 ]; then
+if cp  sen-rke2-package.tar.gz  ../installation_scripts/out/; then
     echo "Build pkgs && Images copy failed to out directory, please check!!"
     popd || exit 1
     exit 1
@@ -197,7 +196,7 @@ else
     echo "Build pkgs && Images successfuly copied"
 fi
 echo "After copying sen rke2 packages"
-popd
+popd || exit 1
 }
 
 main(){
