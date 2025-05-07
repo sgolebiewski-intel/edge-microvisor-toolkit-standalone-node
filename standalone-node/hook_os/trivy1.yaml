@@ -1,0 +1,6 @@
+# # Copyright (C) 2025 Intel Corporation
+# # SPDX-License-Identifier: Apache-2.0
+
+# # Same as '--ignorefile'
+# # Default is '.trivyignore'
+ignorefile: hook_os/.trivyignore
