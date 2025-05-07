@@ -3,4 +3,4 @@
 
 # Same as '--ignorefile'
 # Default is '.trivyignore'
-ignorefile: hook_os/.trivyignore
+ignorefile: /hook_os/.trivyignore
