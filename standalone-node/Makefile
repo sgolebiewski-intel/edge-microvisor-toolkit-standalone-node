@@ -27,9 +27,8 @@ IMG_NAME      ?= ${PROJECT_NAME}
 IMG_VERSION   ?= $(VERSION)
 GIT_COMMIT    ?= $(shell git rev-parse HEAD)
 
-
 # Yamllint variables
-YAML_FILES           := $(shell find . -path './venv_standalonenode' -path './vendor' -prune -o -type f \( -name '*.yaml' -o -name '*.yml' \) -print )
+YAML_FILES           := $(shell find . -path './venv_$(PROJECT_NAME)' -path './vendor' -prune -o -type f \( -name '*.yaml' -o -name '*.yml' \) -print )
 YAML_IGNORE          := vendor, .github/workflows
 
 # Include shared makefile
@@ -39,11 +38,22 @@ all:
 	@# Help: Runs build, lint, test stages
 	build lint test 	
 
-build:
+configure:
+	echo 'http_proxy=$(http_proxy)' > hook_os/config
+	echo 'https_proxy=$(http_proxy)' >> hook_os/config
+	echo 'ftp_proxy=$(ftp_proxy)' >> hook_os/config
+	echo 'socks_proxy=$(socks_proxy)' >> hook_os/config
+	echo 'no_proxy=$(no_proxy)' >> hook_os/config
+
+lint: license shellcheck yamllint mdlint
+	@$(MAKE) yaml-syntax-lint YAML_FILES="$(YAML_FILES)" YAML_IGNORE="$(YAML_IGNORE)"
+	@$(MAKE) rx-yaml-input-validate
+
+build: configure
 	@# Help: Runs build stage
 	@echo "---MAKEFILE ISO BUILD---"
 	echo $@
-	cd installation_scripts && ./build-hook-os-iso.sh && cd .. 
+	cd installation_scripts && ./build-hook-os-iso.sh && cd ..
 	@echo "---END MAKEFILE Build---"
 	
 image:
@@ -59,19 +69,11 @@ docker-build:
 	echo $@
 	@echo "---END MAKEFILE Build---"
 
-license: $(VENV_NAME) ## Check licensing with the reuse tool.
-	. ./$</bin/activate; set -u;\
-	reuse --version;\
-        reuse download --all
-	reuse --root . lint
-
-YAML_FILES := $(shell find . -path './.github' -prune -o -type f -name "*.yaml" -print )
-
-lint: $(VENV_NAME)
-	@. $(VENV_NAME)/bin/activate; flake8 --exclude=venv_stden
-	yamllint --version;\
-	yamllint $(YAML_FILES)
-	@echo "---END MAKEFILE LINT---"
+dependency-check:
+	@# Help: Runs dependency-check stage
+	@echo "---MAKEFILE TEST---"
+	echo $@
+	@echo "---END MAKEFILE TEST---"
 
 clean:
 	@# Clean: Remove build files
