@@ -26,7 +26,7 @@ runcmd:
 
     bash sen-rke2-installer.sh
 
-    # Activate the USB device 
+    # Activate the USB device
     efibootmgr | grep '^Boot[0-9A-Fa-f]\{4\}' | while read -r line; do
       BOOTNUM=$(echo "$line" | cut -c5-8)
       HAS_ASTERISK=$(echo "$line" | grep -o '\*')
@@ -36,4 +36,3 @@ runcmd:
         efibootmgr -b "$BOOTNUM" -a
       fi
     done
-

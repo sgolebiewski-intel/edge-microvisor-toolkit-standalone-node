@@ -4,12 +4,19 @@
 
 extends: default
 
+ignore: |
+  cluster_installers/extensions/
+  cluster_installers/extensions-templates/
+  cluster_installers/charts/
+  vendor/*
+  .github/workflows/*
+
 rules:
   line-length:
-    ignore: |
-      cluster_installers/extensions/
-      cluster_installers/extensions-templates/
+    max: 250
 
   indentation:
     level: warning
-    spaces: 2 # adjust the expected indentation level
+    spaces: 2
+
+  truthy: disable
