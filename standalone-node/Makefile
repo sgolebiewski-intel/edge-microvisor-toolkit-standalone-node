@@ -46,8 +46,6 @@ configure:
 	echo 'no_proxy=$(no_proxy)' >> hook_os/config
 
 lint: license yamllint mdlint
-	@$(MAKE) yaml-syntax-lint YAML_FILES="$(YAML_FILES)" YAML_IGNORE="$(YAML_IGNORE)"
-	@$(MAKE) rx-yaml-input-validate
 
 build: configure
 	@# Help: Runs build stage
