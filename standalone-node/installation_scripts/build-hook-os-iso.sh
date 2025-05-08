@@ -10,7 +10,7 @@ build-hook-os(){
 
 echo "Started the Hook OS build!!,it will take some time"
 
-pushd ../hook_os/ || exit 1
+pushd ../hook_os/ || return 1
 
 
 if make build; then
@@ -19,14 +19,14 @@ else
     echo "Hook OS build Failed,Please check!!"
     exit 1
 fi
-popd > /dev/null || exit 1
+popd > /dev/null || return 1
 
 }
 
 # Download tvm image and store it under out directory
 download-tvm(){
 
-pushd ../host_os > /dev/null || exit 1
+pushd ../host_os > /dev/null || return 1
 
 chmod +x download_tmv.sh
 if bash download_tmv.sh; then
@@ -35,10 +35,10 @@ if bash download_tmv.sh; then
     mv "$os_filename" ../installation_scripts/
 else
     echo "Tiber microvisor Image download failed,please chheck!!!"
-    popd || exit 1
+    popd || return 1
     exit 1
 fi
-popd > /dev/null || exit 1
+popd > /dev/null || return 1
 }
 
 # Create alpine-iso
@@ -56,7 +56,7 @@ else
     fi
     mkdir -p out
     cp ../hook_os/out/hook_x86_64.tar.gz out/
-    pushd out/ || exit 1
+    pushd out/ || return 1
     tar -xzf  hook_x86_64.tar.gz
 
     # Create the ISO structure
@@ -84,10 +84,10 @@ EOF
         echo "ISO created successfully under $(pwd)/out"
     else
         echo "ISO creation failed,please check!!"
-        popd >/dev/null || exit 1
+        popd >/dev/null || return 1
 	exit 1
     fi
-    popd >/dev/null || exit 1
+    popd >/dev/null || return 1
 fi
 
 }
@@ -103,7 +103,7 @@ cp config-file out/
 cp edgenode-logs-collection.sh out/
 
 # Pack hook-os-iso,tvm image,k8-scripts as tar.gz
-pushd out > /dev/null || exit 1
+pushd out > /dev/null || return 1
 checksum_file="checksums.md5"
 
 
@@ -135,15 +135,15 @@ if tar -czf usb-bootable-files.tar.gz hook-os.iso "$os_filename" sen-rke2-packag
         echo "###############################################################################################"
     else
 	echo "Failed to create Standalone Installation files,Please check!!!"
-	popd || exit 1
+	popd || return 1
 	exit 1
     fi
 else
     echo "usb-bootable-files.tar.gz not created,please checke!!!"
-    popd || exit 1
+    popd || return 1
     exit 1
 fi
-popd || exit 1
+popd || return 1
 
 }
 
@@ -151,23 +151,23 @@ popd || exit 1
 download-charts-and-images(){
 
 echo "Downloading K8 charts and images,please wait!!!"
-pushd ../cluster_installers > /dev/null || exit 1
+pushd ../cluster_installers > /dev/null || return 1
 chmod +x download_charts_and_images.sh 
 chmod +x build_package.sh 
 
 
-if bash download_charts_and_images.sh > /dev/null; then
+if ! bash download_charts_and_images.sh > /dev/null; then
     echo "Downloding K8 charts and images failed,please check!!!"
-    popd || exit 1
+    popd || return 1
     exit 1
 else
     echo "Downloding K8 charts and images successful"
 fi
 # Build packages
 
-if bash build_package.sh > /dev/null; then
+if ! bash build_package.sh > /dev/null; then
     echo "Build pkgs failed,please check!!!"
-    popd || exit 1
+    popd || return 1
     exit 1
 else
     echo "Build pkgs successful"
@@ -179,24 +179,24 @@ echo "File exists: $(ls sen-rke2-package.tar.gz)"
 echo "Target directory exists: $(ls ../installation_scripts/out/)"
 if [ ! -f sen-rke2-package.tar.gz ]; then
     echo "File sen-rke2-package.tar.gz does not exist, please check!"
-    popd || exit 1
+    popd || return 1
     exit 1
 fi
 if [ ! -d ../installation_scripts/out/ ]; then
     echo "Directory ../installation_scripts/out/ does not exist, please check!"
-    popd || exit 1
+    popd || return 1
     exit 1
 fi
 echo "Before copying sen rke2 packages"
-if cp  sen-rke2-package.tar.gz  ../installation_scripts/out/; then
+if ! cp  sen-rke2-package.tar.gz  ../installation_scripts/out/; then
     echo "Build pkgs && Images copy failed to out directory, please check!!"
-    popd || exit 1
+    popd || return 1
     exit 1
 else
     echo "Build pkgs && Images successfuly copied"
 fi
 echo "After copying sen rke2 packages"
-popd || exit 1
+popd || return 1
 }
 
 main(){

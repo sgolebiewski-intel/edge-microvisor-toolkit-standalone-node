@@ -62,9 +62,7 @@ check_all_disks=1
 #####################################################################################
 fix_partition_suffix() {
     part_variable=''
-    # ret=$(grep -i "nvme" <<< "$DEST_DISK")
-    if grep -i "nvme" <<< "$DEST_DISK"
-    then
+    if grep -i "nvme" <<< "$DEST_DISK"; then
 	part_variable="p"
     fi
 
@@ -74,9 +72,7 @@ fix_partition_suffix() {
 #####################################################################################
 get_partition_suffix() {
     part_variable=''
-    # ret=$(grep -i "nvme" <<< "$1")
-    if grep -i "nvme" <<< "$1"
-    then
+    if grep -i "nvme" <<< "$1"; then
 	part_variable="p"
     fi
 
@@ -96,15 +92,15 @@ check_return_value() {
 get_dest_disk()
 {
     disk_device=""
-    mapfile -t list_block_devices < <(lsblk -o NAME,TYPE,SIZE,RM | awk '$2 == "disk" && ($1 ~ /^sd/ || $1 ~ /^nvme/) && $3 != "0B" && $4 == 0 {print $1}')
+    # shellcheck disable=SC2207
+    list_block_devices=($(lsblk -o NAME,TYPE,SIZE,RM | grep -i disk | awk '$1 ~ /sd*|nvme*/ {if ($3 !="0B" && $4 ==0)  {print $1}}'))
     for block_dev in "${list_block_devices[@]}";
     do
 	#if there were any problems when the ubuntu was streamed.
 	printf 'OK\n'  | parted ---pretend-input-tty -m  "/dev/$block_dev" p
 	printf 'Fix\n' | parted ---pretend-input-tty -m  "/dev/$block_dev" p
 
-	if parted "/dev/$block_dev" p | grep -i boot;
-	then
+	if ! parted "/dev/$block_dev" p | grep -i boot; then
 	   continue
 	fi
 
@@ -127,7 +123,8 @@ is_single_hdd() {
     # list_block_devices=($(lsblk -o NAME,TYPE | grep -i disk  | awk  '$1 ~ /sd*|nvme*/ {print $1}'))
     ## $3 represents the block device size. if 0 omit
     ## $4 is set to 1 if the device is removable
-    mapfile -t list_block_devices < <(lsblk -o NAME,TYPE,SIZE,RM | awk '$2 == "disk" && ($1 ~ /^sd/ || $1 ~ /^nvme/) && $3 != "0B" && $4 == 0 {print $1}')
+    # shellcheck disable=SC2207
+    list_block_devices=($(lsblk -o NAME,TYPE,SIZE,RM | grep -i disk | awk '$1 ~ /sd*|nvme*/ {if ($3 !="0B" && $4 ==0)  {print $1}}'))
 
     count=${#list_block_devices[@]}
 
@@ -369,7 +366,7 @@ update_lvmvg() {
     for disk in $list_of_lvmg_part;
     do
 	size=$(lsblk -b --output SIZE -n -d "${disk}")
-	if parted -s "${disk}" print | grep -i sector | grep -q 512.$;then
+	if parted -s "${disk}" print | grep -i sector | grep -q 512.$; then
 	    size_512=$(( size_512 + size ))
 	    list_of_lvmg_part_512+=" ${disk} "
 	else
@@ -416,11 +413,11 @@ partition_other_devices() {
 
     ## $3 represents the block device size. if 0 omit
     ## $4 is set to 1 if the device is removable
-    mapfile -t list_block_devices < <(lsblk -o NAME,TYPE,SIZE,RM | grep -i disk | awk '$1 ~ /sd*|nvme*/ {if ($3 !="0B" && $4 ==0)  {print $1}}')
+    # shellcheck disable=SC2207
+    list_block_devices=($(lsblk -o NAME,TYPE,SIZE,RM | grep -i disk | awk '$1 ~ /sd*|nvme*/ {if ($3 !="0B" && $4 ==0)  {print $1}}'))
     list_of_lvmg_part=''
     for block_dev in "${list_block_devices[@]}";
     do
-	grep -i "${DEST_DISK}" <<< "/dev/${block_dev}"
 	if grep -i "${DEST_DISK}" <<< "/dev/${block_dev}";then
 	   continue
 	fi
@@ -455,8 +452,7 @@ partition_other_devices() {
 
     if [[ $list_of_lvmg_part != '' ]];
     then
-	if vgcreate lvmvg "$list_of_lvmg_part";
-    then
+	if ! vgcreate lvmvg "$list_of_lvmg_part"; then
 	    export list_of_lvmg_part=$list_of_lvmg_part
 	    echo "Failed to create a lvmvg group"
 	    echo "Trying with separated sectors"
@@ -594,7 +590,8 @@ EOT
 
 
     #cleanup of mounts
-    mapfile -t mount_points < <(grep -i "/mnt" /proc/mounts | awk '{print $2}' | sort -nr)
+    # shellcheck disable=SC2207
+    mount_points=($(grep -i "/mnt"  /proc/mounts | awk '{print $2}' | sort -nr))
     for mounted_dir in "${mount_points[@]}";
     do
 	umount "$mounted_dir"

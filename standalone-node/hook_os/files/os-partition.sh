@@ -223,7 +223,7 @@ if [ "$blk_disk_count" -eq 1 ]; then
     #secondary rootfs partitions for A/B day2 upgrades
     secondary_rootfs_disk_end=$((new_disk_partition_size+secondary_rootfs_disk_size))
 
-    if ! parted --pretend-input-tty "${disk}" resizepart "$data_part_number" "${new_disk_partition_size}GB" mkpart primary ext4 "${new_disk_partition_size}GB" "${secondary_rootfs_disk_end}GB"; then
+    if ! parted ---pretend-input-tty "${disk}" resizepart "$data_part_number" "${new_disk_partition_size}GB" mkpart primary ext4 "${new_disk_partition_size}GB" "${secondary_rootfs_disk_end}GB"; then
         echo "Partition creation failed for the disk ${disk} failed"
         exit 1
     else
@@ -244,7 +244,7 @@ else
     data_part_end_size=$(echo "$disk_size - $total_size_inuse" | bc)
     #secondary rootfs partitions for A/B day2 upgrades
     secondary_rootfs_disk_end=$((data_part_end_size+secondary_rootfs_disk_size))
-    if ! parted --pretend-input-tty "${disk}" resizepart "$data_part_number" "${data_part_end_size}GB" mkpart primary ext4 "${data_part_end_size}GB" "${secondary_rootfs_disk_end}GB"; then
+    if ! parted ---pretend-input-tty "${disk}" resizepart "$data_part_number" "${data_part_end_size}GB" mkpart primary ext4 "${data_part_end_size}GB" "${secondary_rootfs_disk_end}GB"; then
         echo "Partition resize for the disk ${disk} failed"
         exit 1
     else

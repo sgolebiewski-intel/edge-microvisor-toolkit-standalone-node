@@ -72,6 +72,7 @@ if [ -z "$user_name" ] || [ -z "$passwd" ]; then
     exit 1
 fi
 
+
 # Extract USB bootable files
 echo "Extracting USB bootable files..."
 rm -rf usb_files && mkdir -p usb_files
@@ -207,3 +208,4 @@ if copy_to_partition "$K8_PART" "usb_files/sen-rke2-package.tar.gz" "/mnt" && co
 else
     echo "USB Installation failed,please re-run the script again!!!"
 fi
+

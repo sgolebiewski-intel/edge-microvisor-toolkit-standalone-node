@@ -56,7 +56,7 @@ convert_hyphen_to_colon() {
     echo "$1" | tr '-' ':'
 }
 
-if ipam=$(parse_ipam_from_cmdline); then
+if ! ipam=$(parse_ipam_from_cmdline); then
     echo "Failed to get IPAM value, not statically configuring network"
     cat /proc/cmdline
     exit 0
