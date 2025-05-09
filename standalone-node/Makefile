@@ -73,6 +73,11 @@ dependency-check:
 	echo $@
 	@echo "---END MAKEFILE TEST---"
 
+test:
+	@# Help: Runs test stage
+	@echo "---MAKEFILE TEST---"
+	echo $@
+	@echo "---END MAKEFILE TEST---"
 clean:
 	@# Clean: Remove build files
 	@echo "---MAKEFILE CLEAN---"
