@@ -9,6 +9,10 @@ on:
     branches:
       - test
 
+permissions:
+  contents: read
+  security-events: write
+
 env:
   MARKDOWNLINT_CLI_VER: 0.44.0
 
