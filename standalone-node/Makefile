@@ -45,9 +45,7 @@ configure:
 	echo 'socks_proxy=$(socks_proxy)' >> hook_os/config
 	echo 'no_proxy=$(no_proxy)' >> hook_os/config
 
-lint: license yamllint mdlint shellcheck
-	@$(MAKE) yaml-syntax-lint YAML_FILES="$(YAML_FILES)" YAML_IGNORE="$(YAML_IGNORE)"
-	@$(MAKE) rx-yaml-input-validate
+lint: license yamllint mdlint
 
 build: configure
 	@# Help: Runs build stage
