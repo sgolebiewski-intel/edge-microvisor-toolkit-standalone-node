@@ -6,5 +6,7 @@
 # Default is '.trivyignore'
 ignorefile: standalone-node/hook_os/.trivyignore
 
-skip-dirs:
-  - standalone-node/hook_os
+scan:
+  # Same as '--skip-dirs'
+  skip-dirs:
+    - standalone-node/hook_os
