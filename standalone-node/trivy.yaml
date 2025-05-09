@@ -9,4 +9,4 @@ ignorefile: standalone-node/hook_os/.trivyignore
 scan:
   # Same as '--skip-dirs'
   skip-dirs:
-    - standalone-node/hook_os
+    - standalone-node/*
