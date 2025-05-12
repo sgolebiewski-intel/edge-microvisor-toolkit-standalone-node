@@ -323,19 +323,18 @@ block_disk_phy_block_disk() {
 
     for block_dev in "${list_block_devices[@]}";
     do
-	if grep -i "${DEST_DISK}" <<< "/dev/${block_dev}";then
+	if grep -i "${DEST_DISK}" <<< "/dev/${block_dev}"; then
 	    continue
 	fi
 
 	# get info if there is a 4kB physical block present
-	if parted -s "/dev/${block_dev}" print | grep -i sector | grep -q 4098.$;then
+	if parted -s "/dev/${block_dev}" print | grep -i sector | grep -q 4098.$; then
 	    block_size_4k=$(( 1 + block_size_4k ))
 	    disk_4k="$disk_4k /dev/${block_dev}"
 	    export disk_4k
 	fi
 
-	parted -s "/dev/${block_dev}" print | grep -i sector | grep -q 512.$
-	if parted -s "/dev/${block_dev}" print | grep -i sector | grep -q 512.$;then
+	if parted -s "/dev/${block_dev}" print | grep -i sector | grep -q 512.$; then
 	    block_size_512=$(( 1 + block_size_512 ))
 	    disk_512="$disk_512 /dev/${block_dev}"
 	    export disk_512
