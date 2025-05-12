@@ -73,6 +73,11 @@ dependency-check:
 	echo $@
 	@echo "---END MAKEFILE TEST---"
 
+test:
+	@# Help: Runs test stage
+	@echo "---MAKEFILE TEST---"
+	echo $@
+	@echo "---END MAKEFILE TEST---"
 clean:
 	@# Clean: Remove build files
 	@echo "---MAKEFILE CLEAN---"
@@ -86,10 +91,3 @@ clean:
 list: 
 	@# Help: displays make targets
 	help
-
-fuzz: $(VENV_NAME)
-	@# Help: Runs fuzz testing for 60 seconds
-	@echo "---MAKEFILE FUZZ TEST---"
-	mkdir -p ./out
-	@. $(VENV_NAME)/bin/activate; $(VENV_NAME)/bin/python ./esc/fuzz_Edge_microvisor.py 60 > ./out/fuzz_repor_4hr.logs 2>&1
-	@echo "---END MAKEFILE FUZZ TEST---"
