@@ -76,7 +76,6 @@ jobs:
       run_security_scans: false
       run_version_check: true
       run_dep_version_check: true
-      run_asset_release: false
       run_freeup_ubuntu_space: true
       run_build: true
       run_upload_assets: true
