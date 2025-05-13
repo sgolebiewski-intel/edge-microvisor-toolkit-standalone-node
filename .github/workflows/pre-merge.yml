@@ -79,12 +79,14 @@ jobs:
       run_asset_release: false
       run_freeup_ubuntu_space: true
       run_build: true
+      run_upload_assets: true
       run_lint: false
       run_test: false
-      run_validate_clean_folder: true
+      run_validate_clean_folder: false
       run_docker_build: false
       run_artifact: false
       prefix_tag_separator: "/"
+      assets_dir: "installation_scripts/final_release"
       project_folder: ${{ matrix.project_folder }}
       trivy_image_skip:  "postgres:16.4"
       trivy_config_path: ${{ matrix.project_folder }}/trivy.yaml
