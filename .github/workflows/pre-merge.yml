@@ -71,13 +71,14 @@ jobs:
       fail-fast: false
       matrix:
         project_folder: ${{ fromJson(needs.pre-checks.outputs.filtered_projects) }}
-    uses: open-edge-platform/orch-ci/.github/workflows/pre-merge.yml@upload-pkg-as-asset
+    uses: open-edge-platform/orch-ci/.github/workflows/pre-merge.yml@test-pre-merge
     with:
       run_security_scans: false
       run_version_check: true
       run_dep_version_check: true
       run_freeup_ubuntu_space: true
       run_build: true
+      run_upload_assets: true
       run_lint: false
       run_test: false
       run_validate_clean_folder: false
@@ -85,6 +86,7 @@ jobs:
       run_artifact: false
       prefix_tag_separator: "/"
       project_folder: ${{ matrix.project_folder }}
+      assets_dir: "installation_scripts/final_release"
       trivy_image_skip:  "postgres:16.4"
       trivy_config_path: ${{ matrix.project_folder }}/trivy.yaml
     secrets: inherit
