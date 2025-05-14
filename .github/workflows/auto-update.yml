@@ -1,6 +1,6 @@
 ---
-# SPDX-FileCopyrightText: (C) 2023 Intel Corporation
-# SPDX-License-Identifier: LicenseRef-Intel
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
 
 name: Auto Update PR
 
@@ -13,8 +13,15 @@ on:
       - main
       - release-*
 
+permissions: {}
+
 jobs:
   Auto-Update-PR:
-    runs-on: generic
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ${{ github.repository_owner == 'intel' && 'intel-ubuntu-latest' || 'ubuntu-latest' }}
     steps:
-      - uses: intel-innersource/frameworks.actions.thirdparty.auto-update@v2.2.1
+      - uses: tibdex/auto-update@4081c5bdc34560b58288a010318054e63e6f4a51
+        with:
+          github_token: ${{ secrets.SYS_ORCH_GITHUB }}

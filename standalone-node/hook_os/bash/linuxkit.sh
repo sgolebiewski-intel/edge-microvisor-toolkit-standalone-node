@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
 
 function obtain_linuxkit_binary_cached() {
 	# Grab linuxkit from official GitHub releases; account for arm64/amd64 differences

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
 FROM linuxkit/alpine:146f540f25cd92ec8ff0c5b0c98342a9a95e479e as builder
 
 ARG TARGETPLATFORM
@@ -11,6 +14,7 @@ ENV CONTAINERD_COMMIT=v1.7.15
 ENV NERDCTL_VERSION=1.7.6
 ENV GOPATH=/go
 RUN apk add go git
+RUN apk add --no-cache curl
 RUN mkdir -p $GOPATH/src/github.com/containerd && \
   cd $GOPATH/src/github.com/containerd && \
   git clone https://github.com/containerd/containerd.git && \
@@ -21,9 +25,15 @@ WORKDIR $GOPATH/src/github.com/containerd/containerd
 RUN make binaries EXTRA_FLAGS="-buildmode pie" EXTRA_LDFLAGS='-w -s -extldflags "-fno-PIC -static"' BUILDTAGS="static_build no_devmapper"
 
 # install nerdctl
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=amd64; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=arm64; else ARCHITECTURE=amd64; fi \
-  && wget https://github.com/containerd/nerdctl/releases/download/v${NERDCTL_VERSION}/nerdctl-${NERDCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz \
-  && tar -zxvf nerdctl-${NERDCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz -C /usr/local/bin/
+#RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=amd64; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=arm64; else ARCHITECTURE=amd64; fi \
+#  && wget https://github.com/containerd/nerdctl/releases/download/v${NERDCTL_VERSION}/nerdctl-${NERDCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz \
+#  && tar -zxvf nerdctl-${NERDCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz -C /usr/local/bin/
+
+RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=amd64; \
+    elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=arm64; \
+    else ARCHITECTURE=amd64; fi \
+  && curl -L -o nerdctl.tar.gz https://github.com/containerd/nerdctl/releases/download/v${NERDCTL_VERSION}/nerdctl-${NERDCTL_VERSION}-linux-${ARCHITECTURE}.tar.gz \
+  && tar -zxvf nerdctl.tar.gz -C /usr/local/bin/
 
 RUN cp bin/containerd bin/ctr bin/containerd-shim bin/containerd-shim-runc-v2 /usr/bin/
 RUN strip /usr/bin/containerd /usr/bin/ctr /usr/bin/containerd-shim /usr/bin/containerd-shim-runc-v2

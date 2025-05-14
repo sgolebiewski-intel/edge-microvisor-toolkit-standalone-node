@@ -1,4 +1,7 @@
 ---
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
 # Attention, this is a template that is run through envsubst
 # but with a specific list of variables to replace. Thus:
 # - HOOK_VERSION: ${HOOK_VERSION} (a simple 1.2.3 string, no 'v')
@@ -74,70 +77,70 @@ services:
     env:
       - INSECURE=true
     devices:
-    - path: all
-      type: b
-    - path: all
-      type: c
-    - path: "/dev/console"
-      type: c
-      major: 5
-      minor: 1
-      mode: "0666"
-    - path: "/dev/tty0"
-      type: c
-      major: 4
-      minor: 0
-      mode: "0666"
-    - path: "/dev/tty1"
-      type: c
-      major: 4
-      minor: 1
-      mode: "0666"
-    - path: "/dev/ttyS0"
-      type: c
-      major: 4
-      minor: 64
-      mode: "0666"
-    - path: "/dev/ttyS1"
-      type: c
-      major: 4
-      minor: 65
-      mode: "0666"
-    - path: "/dev/ttyS2"
-      type: c
-      major: 4
-      minor: 66
-      mode: "0666"
-    - path: "/dev/ttyAMA0"
-      type: c
-      major: 204
-      minor: 64
-      mode: "0666"
-    - path: "/dev/ttyAMA1"
-      type: c
-      major: 204
-      minor: 65
-      mode: "0666"
-    - path: "/dev/ttyAML0"
-      type: c
-      major: 243
-      minor: 0
-      mode: "0666"
-    - path: "/dev/ttyAML1"
-      type: c
-      major: 243
-      minor: 1
-      mode: "0666"
-    - path: "/dev/ttyUSB0"
-      type: c
-      major: 188
-      minor: 0
-      mode: "0666"
-    - path: "/dev/ttyUSB1"
-      type: c
-      major: 188
-      minor: 1
-      mode: "0666"
+      - path: all
+        type: b
+      - path: all
+        type: c
+      - path: "/dev/console"
+        type: c
+        major: 5
+        minor: 1
+        mode: "0666"
+      - path: "/dev/tty0"
+        type: c
+        major: 4
+        minor: 0
+        mode: "0666"
+      - path: "/dev/tty1"
+        type: c
+        major: 4
+        minor: 1
+        mode: "0666"
+      - path: "/dev/ttyS0"
+        type: c
+        major: 4
+        minor: 64
+        mode: "0666"
+      - path: "/dev/ttyS1"
+        type: c
+        major: 4
+        minor: 65
+        mode: "0666"
+      - path: "/dev/ttyS2"
+        type: c
+        major: 4
+        minor: 66
+        mode: "0666"
+      - path: "/dev/ttyAMA0"
+        type: c
+        major: 204
+        minor: 64
+        mode: "0666"
+      - path: "/dev/ttyAMA1"
+        type: c
+        major: 204
+        minor: 65
+        mode: "0666"
+      - path: "/dev/ttyAML0"
+        type: c
+        major: 243
+        minor: 0
+        mode: "0666"
+      - path: "/dev/ttyAML1"
+        type: c
+        major: 243
+        minor: 1
+        mode: "0666"
+      - path: "/dev/ttyUSB0"
+        type: c
+        major: 188
+        minor: 0
+        mode: "0666"
+      - path: "/dev/ttyUSB1"
+        type: c
+        major: 188
+        minor: 1
+        mode: "0666"
 
   - name: dhcpcd-daemon
     image: linuxkit/dhcpcd:v1.0.0
@@ -170,10 +173,10 @@ services:
       mkdir:
         - /var/lib/os-installd
     devices:
-    - path: all
-      type: b
-    - path: all
-      type: c
+      - path: all
+        type: b
+      - path: all
+        type: c
 
 files:
   - path: etc/scripts/install-os.sh
@@ -242,7 +245,6 @@ files:
   - path: etc/hook/env_config
     contents: ""
     mode: "0644"
-
 
 trust:
   org:

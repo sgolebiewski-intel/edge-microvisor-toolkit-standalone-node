@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
 
 function check_docker_daemon_for_sanity() {
 	# Shenanigans to go around error control & capture output in the same effort, 'docker info' is slow.

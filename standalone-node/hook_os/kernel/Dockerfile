@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
 FROM debian:stable as kernel-source-unpacked
 ENV DEBIAN_FRONTEND=noninteractive
 

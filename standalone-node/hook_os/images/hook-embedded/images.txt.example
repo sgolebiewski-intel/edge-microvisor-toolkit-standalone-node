@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
 # This is an example file. It explains the required format.
 # For the actual file, you must remove all the comments.
 # The format is source image, a single space, optional additional tag of the source image, a single space, true or false to remove the original tag.

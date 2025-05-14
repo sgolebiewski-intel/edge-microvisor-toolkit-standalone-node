@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2025 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
 # default containerd configuration file, generated via `containerd config default`
 disabled_plugins = []
 imports = []
