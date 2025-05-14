@@ -11,7 +11,7 @@ TOOL_VERSION_CHECK ?= 0
 
 ##### Variables #####
 
-# Defining the shell, users and groups
+# Defining  the shell, users and groups
 SHELL       := bash -e -o pipefail
 CURRENT_UID := $(shell id -u)
 CURRENT_GID := $(shell id -g)
