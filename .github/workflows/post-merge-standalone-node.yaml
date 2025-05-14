@@ -9,6 +9,7 @@ on:
     branches:
       - main
       - release-*
+      - ipsita-npg-patch-1
     paths:
       - "standalone-node/**"
 
