@@ -9,6 +9,7 @@ on:
     branches:
       - main
       - release-*
+      - test_post_
     paths:
       - "standalone-node/**"
 
