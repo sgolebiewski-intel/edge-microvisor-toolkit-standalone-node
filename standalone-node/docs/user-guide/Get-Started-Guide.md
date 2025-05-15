@@ -21,10 +21,8 @@ Create the Standalone Installation Tar File
    # Proxy configuration
    http_proxy="http://proxy-dmz.intel.com:912"
    https_proxy="http://proxy-dmz.intel.com:912"
-   no_proxy="localhost,127.0.0.1,intel.com,*.intel.com,10.0.0.0/8"
-   HTTP_PROXY="http://proxy-dmz.intel.com:912"
-   HTTPS_PROXY="http://proxy-dmz.intel.com:912"
-   NO_PROXY="localhost,127.0.0.1,intel.com,*.intel.com,10.0.0.0/8"
+   ftp_proxy="http://proxy-dmz.intel.com:912"
+   no_proxy="127.0.0.1,localhost,10.0.0.0/8"
 
    # SSH configuration (get the key using "cat ~/.ssh/id_rsa.pub")
    ssh_key=""
