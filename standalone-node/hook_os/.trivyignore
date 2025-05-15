@@ -3,5 +3,5 @@
 
 # Ignore misconfigurations
 # Hook OS components require root permissions
-AVD-DS-0002
-AVD-DS-0025
+#AVD-DS-0002
+#AVD-DS-0025
