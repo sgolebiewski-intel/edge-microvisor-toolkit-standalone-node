@@ -9,96 +9,94 @@ The current release of the Intel® Edge Microvisor Toolkit Standalone Node suppo
 
 ---
 
-## Step 2: Download
+## Step 2: Build from Source
 
-Select **Configure & Download** to download the Intel® Edge Microvisor Toolkit Standalone Node installer.  
-[Configure & Download](https://edgesoftwarecatalog.intel.com/package/edge_microvisor_toolkit_standalone_node)
+Create the Standalone Installation Tar File
 
----
+- To create the standalone installation tar file with all required files for preparing a bootable USB device, run the following command
 
-## Step 3: Configure
+> **Note:** If the development system is behind a firewall, ensure to add the proxy configuration in the hook_os/config file
 
-The `Edge_Microvisor_Toolkit_Standalone_Node.zip` is downloaded to the Developer's System.
-
-- Create a working folder
+-  Modify the config file
 
    ```
-   mkdir ~/installer
-   sudo chmod 700 ~/installer
+   vi config
+   # Proxy configuration
+   http_proxy="http://proxy-dmz.intel.com:912"
+   https_proxy="http://proxy-dmz.intel.com:912"
+   no_proxy="localhost,127.0.0.1,intel.com,*.intel.com,10.0.0.0/8"
+   HTTP_PROXY="http://proxy-dmz.intel.com:912"
+   HTTPS_PROXY="http://proxy-dmz.intel.com:912"
+   NO_PROXY="localhost,127.0.0.1,intel.com,*.intel.com,10.0.0.0/8"
+
+   # SSH configuration (get the key using "cat ~/.ssh/id_rsa.pub")
+   ssh_key=""
    ```
 
-- Extract
-
    ```
-   cd ~/installer
-   unzip <path>/Edge_Microvisor_Toolkit_Standalone_Node.zip
+   make build
    ```
+## Step 3:  Prepare the USB Drive
 
-- Make installer an executable
-
-   ```
-   chmod +x edgesoftware
-   ```
-
-- Insert the USB drive into the Developer's System and identify the USB disk.
+- Insert the USB drive into the Developer's System and identify the USB disk:
 
    ```
    lsblk -o NAME,MAJ:MIN,RM,SIZE,RO,FSTYPE,MOUNTPOINT,MODEL
    ```
+   > **Note:** Ensure the correct USB drive is selected to avoid data loss.
 
-> **Note:** Please be advised that the installer will erase all contents on the target USB drive. It is crucial to ensure that the correct USB drive is selected to avoid any unintended data loss.
+- Copy files to prepare the Bootable USB
 
-- Unmount the USB drive if mounted.
+  Extract the contents of sen-installation-files.tar.gz
 
-   ```
-   sudo umount <usb device>
-   ```
+  ```
+   tar -xzf sen-installation-files.tar.gz
+  ```
 
-- Start the installer to create the bootable USB
+- Extracted files will include
 
-   ```
-   sudo ./edgesoftware install
-   ```
+  ```
+  usb-bootable-files.tar.gz
+  config-file
+  bootable-usb-prepare.sh
+  edgenode-logs-collection.sh
+  ```
 
-- Edge node configuration
-
-   ```
-   Enter the HTTP proxy (leave blank for none): <Enter HTTP Proxy eg. http://x.y.z:abc>
-   Enter the HTTPS proxy (leave blank for none): <Enter HTTP Proxy eg. http://x.y.z:abc>
-   Enter the NO_PROXY list (comma-separated): <Enter No Proxy eg. "localhost,127.0.0.1,a.b.c.d">
-   Enter your SSH public key: <Enter the ssh pub key created for connecting to edge node>
-   Enter user name: <linux username>
-   Enter password: <linux password>
-  
-   Enter the disk (e.g., /dev/sda, /dev/sdb): <Enter USB drive>
-   ```
-
-- Upon completion safely eject the USB drive from the developer's system.
-
----
-
-## Step 4: Install
-
-- Insert the USB drive into the target edge node and boot from it. The installer will automatically start.  
-
-- The USB based installer will reboot once and continues the installation.
-
-- To monitor the progress and completion of installation.
+- Run the preparation script to create the bootable USB
 
    ```
-   tail -f /var/log/os-installer.log
-   tail -f /var/log/cluster-init.log 
+   sudo ./bootable-usb-prepare.sh /dev/sdX usb-bootable-files.tar.gz config
    ```
 
-- Console output on successful completion
-
    ```
-    ....
-    Edge Microvisor Toolkit - cluster installation complete
-    ....
+   Example usage:
+   ./bootable-usb-prepare.sh /dev/sdc usb-bootable-files.tar.gz config
    ```
+   - Required Inputs for the Script:
 
-- Once the installation is complete it is safe to remove the bootable USB drive.
+     usb: A valid USB device name (e.g., /dev/sdc).
+     usb-bootable-files.tar.gz: The tar file containing bootable files.
+     config-file: Configuration file for proxy settings (if the edge node is behind a firewall).
+     Includes ssh_key, which is your Linux device's id_rsa.pub key for passwordless SSH access to the edge node.
+     User credentials: Set the username and password for the edge node.
+
+     > **Note:**  Providing proxy settings is optional if the edge node does not require them to access internet services.
+
+## Step 5: Deploy on Standalone Node
+
+- Plug the created bootable USB pen drive into the standalone node
+
+- Set the BIOS boot manager to boot from the USB pen drive
+
+- Reboot the Standalone Node
+  This will start the HookOS boot followed by Tiber Microvisor installations.
+
+- Automatic Reboot
+  The standalone edge node will automatically reboot into Tiber Microvisor.
+
+- First Boot Configuration
+  During the first boot, cloud-init will install the RKE2 Kubernetes cluster.
+
 
 ## Step 5: Set up tools on Developer's System
 
@@ -335,23 +333,7 @@ Install a WordPress application as a test application using `helm`.
 
 ### Edge Node Logs from Developer's System
 
-Use the `edgenode-logs-collection.sh` script to collect logs from the edge node.
-
-```
-./edgenode-logs-collection.sh <edgenode-username> <edgenode-ip>
-```
-
-OS install logs are stored on the USB drive in the `os-installer.log` file.
-
 ### Edge Node IP address
 
 The edge node operates both the Kubernetes control plane and node services, making it a single-node cluster. It is essential to ensure that the IP address of the edge node remains unchanged after deployment to prevent any indeterminate behavior of the Kubernetes control plane.
 
-### Uninstallation of installer on Developer's System
-
-In case of any errors during installation process on the Developer's System, user can uninstall and retry installing the Edge Microvisor Toolkit Standalone Node installer.
-
-   ```
-   cd ~/installer/Edge_Microvisor_Toolkit_Standalone_Node/
-   sudo ./edgesoftware uninstall -a
-  ```

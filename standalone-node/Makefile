@@ -45,7 +45,7 @@ configure:
 	echo 'socks_proxy=$(socks_proxy)' >> hook_os/config
 	echo 'no_proxy=$(no_proxy)' >> hook_os/config
 
-lint: license yamllint mdlint shellcheck
+lint: license yamllint mdlint
 
 build: configure
 	@# Help: Runs build stage
@@ -61,12 +61,6 @@ image:
 	cd host_os && ./download_tmv.sh && cd ..
 	@echo "---END MAKEFILE Build---"
 
-docker-build: 
-	@# Help: Runs docker-build stage
-	@echo "---MAKEFILE BUILD---"
-	echo $@
-	@echo "---END MAKEFILE Build---"
-
 dependency-check:
 	@# Help: Runs dependency-check stage
 	@echo "---MAKEFILE TEST---"
@@ -78,15 +72,6 @@ test:
 	@echo "---MAKEFILE TEST---"
 	echo $@
 	@echo "---END MAKEFILE TEST---"
-clean:
-	@# Clean: Remove build files
-	@echo "---MAKEFILE CLEAN---"
-	cd host_os && rm -f *.gz *.sha256sum *.der && cd ..
-	cd hook_os && make clean && cd ..
-	cd installation_scripts && rm -rf out && cd ..
-	rm -rf ./out
-	rm -rf .hypothesis
-	@echo "---END MAKEFILE CLEAN---"
 
 list: 
 	@# Help: displays make targets
