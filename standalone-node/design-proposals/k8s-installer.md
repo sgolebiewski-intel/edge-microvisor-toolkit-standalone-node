@@ -1,4 +1,4 @@
-# Design Proposal: Edge Microvisor Toolkit Standalone Installer and Importer
+# Design Proposal: Kubernetes Installer Enhancement
 
 Author(s): Hyunsun Moon
 
@@ -8,7 +8,7 @@ Last updated: 5/12/25
 
 The Edge Microvisor Toolkit Standalone (EMT-S) provides a simplified approach to deploying an EMT edge without relying on the Edge Manageability Framework (EMF). This solution is particularly suited for quick EMT trials or use cases where connecting to a centralized EMF is either impractical or unnecessary.
 
-This proposal focuses on enhancing the Kubernetes installer for EMT-S to support the same level of Kubernetes configurability as EMF-managed edges, including critical environment-specific configurations to ensure successful cluster creation such as Pod and Service subnet ranges and private registry mirrors. To achieve this, it introduces the ability to use a cluster template as input for building EMT-S bootable images. The installer updates also incorporate recent design decisions, such as the transition from RKE2 to K3s as the default Kubernetes distribution [todo: add link] and the integration of K3s into the EMT image [todo: add link].
+This proposal focuses on enhancing the Kubernetes installer for EMT-S to support the same level of Kubernetes configurability as EMF-managed edges, including critical environment-specific configurations to ensure successful cluster creation such as Pod and Service subnet ranges and private registry mirrors. To achieve this, it introduces the ability to use a cluster template as input for building EMT-S bootable images. The installer updates also incorporate recent design decisions, such as the transition from RKE2 to K3s for Kubernetes distribution [todo: add link] and the integration of K3s into the EMT image [todo: add link].
 
 ## Proposal
 
@@ -25,11 +25,11 @@ flowchart TD
     g@{shape: lean-r, label: "(output)</br>bootable usb"} -->
     i["Boot target system</br>from usb"] --> j
     j["Reboot"] -->
-    k("K3s installed by cloud-init") -->
+    k("Kubernetes installed by cloud-init") -->
     l((end))
     subgraph hook[HookOS os-installer]
         h1["Install os on disk"] -->
-        h2["`**Generate cloud-init cfg for k3s**`"] -->
+        h2["`**Generate kubernetes.cfg cloud-init file**`"] -->
         h3["Install cloud-init cfgs"] -->
         h4["Create user</br>proxy, ssh setting"] -->
         h5["Boot order change to disk"]
@@ -43,7 +43,6 @@ flowchart TD
 A new Kubernetes Configuration section will be added to the [`config-file`](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/installation_scripts/config-file). This section will align with the EMF default cluster template, which is based on the `spec` part of the [CAPI K3s ConfigSpec Custom Resource Definition](https://github.com/k3s-io/cluster-api-k3s/blob/main/bootstrap/api/v1beta2/kthreesconfig_types.go#L27). Below is an example:
 
 ```yaml
----
 kubernetes: 
   kind: "KThreesControlPlaneTemplate"
   apiVersion: "controlplane.cluster.x-k8s.io/v1beta2"
@@ -95,6 +94,7 @@ Users can modify these values when passing the `config-file` as a parameter for 
 The current `config-file` format is raw text. To improve readability and validation, we propose switching to a YAML format, as shown below:
 
 ```yaml
+# config-file
 version: 1.0
 operatingSystem:
   users:
@@ -116,11 +116,11 @@ Additionally, as the `config-file` content expands, the validation logic in `boo
 
 #### Processing Kubernetes Configuration
 
-The `config-file` will be processed by Hook OS during the OS installation via the [`os-installer` service](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/hook_os/hook-os.yaml#L159), which runs the [`install-os.sh`](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/hook_os/files/install-os.sh) script. A new step will be added to `install-os.sh` to process the Kubernetes Configuration section and generate a cloud-init configuration (`/mnt/etc/cloud/cloud.cfg.d/kubernetes-installer.cfg`) for the target OS. The static Kubernetes bootstrap command in the default [`cloud-init.yaml`](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/hook_os/files/cloud-init.yaml) will be removed.
+The `config-file` will be processed by Hook OS during the OS installation via the [`os-installer` service](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/hook_os/hook-os.yaml#L159), which runs the [`install-os.sh`](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/hook_os/files/install-os.sh) script. A new step will be added to `install-os.sh` to process the Kubernetes Configuration section and generate a cloud-init configuration (`/mnt/etc/cloud/cloud.cfg.d/kubernetes.cfg`) for the target OS. The static Kubernetes bootstrap command in the default [`cloud-init.yaml`](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/hook_os/files/cloud-init.yaml) will be removed.
 
 #### Cluster Bootstrapper
 
-A new Go-based tool, `cluster-bootstrapper`, will be introduced to generate the cloud-init configuration from the Kubernetes Configuration section of the `config-file`. This tool will leverage the [CAPI K3s bootstrap provider codebase](https://github.com/k3s-io/cluster-api-k3s/tree/main/pkg/cloudinit). The `cluster-bootstrapper` binary will be released as a Docker image and included in the `volume` section of `hook-os.yaml` for use by the `install-os.sh` script. 
+A new Go-based tool, `cluster-bootstrapper`, will be introduced to generate the cloud-init configuration from the Kubernetes Configuration section of the `config-file`. This tool will leverage the [CAPI K3s bootstrap provider codebase](https://github.com/k3s-io/cluster-api-k3s/tree/main/pkg/cloudinit). The `cluster-bootstrapper` binary will be released as a Docker image and included in the `volume` section in `hook-os.yaml` for use by the `os-installer` service.
 
 ```yaml
 # hook-os.yaml
@@ -158,22 +158,98 @@ Example of `cluster-bootstrapper` usage in `install-os.sh`.
 
 ```bash
 create_cloud_init_for_k8s() {
-    /mnt/bootstrapper/cluster-bootstrapper -config-file "$CONFIG_FILE" -out /mnt/etc/cloud/cloud.cfg.d/k8s.cfg
-    chmod +x /mnt/etc/cloud/cloud.cfg.d/k8s.cfg
+    /mnt/bootstrapper/cluster-bootstrapper -config-file "$CONFIG_FILE" -out /mnt/etc/cloud/cloud.cfg.d/kubernetes.cfg
+    chmod +x /mnt/etc/cloud/cloud.cfg.d/kubernetes.cfg
 }
 ```
 
 #### First Boot Behavior
 
-With these changes, upon the first boot, the cloud-init configuration generated by the `cluster-installer` tool will bootstrap K3s on the target system.
+With these changes, upon the first boot, the cloud-init configuration generated by the `cluster-bootstrapper` tool will bootstrap K3s on the target system.
 
-### Addon installation
+### Addon
+
+To align with the recent design decision to minimize resource consumption for Kubernetes itself and dedicate more resources to workloads [todo: add link to the ADR], only essential addons will be installed by default with the K3s core. These include:
+
+- CoreDNS
+- Kube-router network policy controller
+- Local-path-provisioner persistent volume controller
+- Traefik ingress controller
+- ServiceLB load-balancer controller
+- Metrics Server
+- Helm controller
+- Kubernetes dashboard
+
+Most of these addons are bundled with K3s by default and require no additional effort to enable, except for the Kubernetes dashboard. The Kubernetes dashboard will be installed using K3s's built-in [Helm controller](https://github.com/k3s-io/helm-controller/) and [auto-deploying AddOn manifests](https://docs.k3s.io/installation/packaged-components) features.
+
+Below is an example of how to configure the Kubernetes dashboard installation using a cluster template:
+
+```yaml
+kubernetes:
+  kind: "KThreesControlPlaneTemplate"
+  apiVersion: "controlplane.cluster.x-k8s.io/v1beta2"
+  spec:
+    template:
+      spec:
+        version: "v1.33.0+k3s1"
+        files:
+          path: /var/lib/rancher/k3s/server/manifests/kubernetes-dashboard.yaml
+          content: |
+            apiVersion: helm.cattle.io/v1
+            kind: HelmChart
+            metadata:
+              namespace: kube-system
+              name: kubernetes-dashboard
+            spec:
+              targetNamespace: kubernetes-dashboard
+              createNamespace: true
+              chartContent: # base64 encoded kubernetes-dashboard chart content
+              valuesContent: |-
+                service:
+                  type: LoadBalancer
+          owner: root:root
+  ...
+```
+
+### Access
+
+#### Accessing the Kubernetes API
+
+The Kubernetes API (kube-apiserver) can be accessed either directly from the EMT-S machine or from external devices that can route to the EMT-S machine.
+
+For seamless access to the Kubernetes API from within the EMT-S machine, an additional `postK3sCommand` in the Kubernetes configuration can be added. This ensures that the `kubectl` binary, readily available by K3s after K3s installation, is properly configured for immediate use:
+
+```yaml
+# config-file
+kubernetes:
+  kind: "KThreesControlPlaneTemplate"
+  apiVersion: "controlplane.cluster.x-k8s.io/v1beta2"
+  spec:
+    template:
+      spec:
+        postK3sCommand:
+          - mkdir -p ~/.kube
+          - cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+    ...
+```
+
+To access the Kubernetes API from an external machine, users must manually copy the `kubeconfig` file from the EMT-S machine to the client device. After copying, the server address in the `kubeconfig` file should be updated to reflect the external IP address of the EMT-S machine. This can be improved in future releases by introducing CLI tool (see Open Issues).
+
+#### Accessing Application Services
+
+Once an application is deployed, users can access its services through various methods that Kubernetes supports. The recommended approach in EMT-S is to use either a `LoadBalancer`-type Service or an `Ingress`. 
+
+By default, K3s includes ServiceLB and the Traefik Ingress Controller, both of which are configured to expose services using the external IP address of the EMT-S node. For more details, refer to the [K3s Networking Services documentation](https://docs.k3s.io/networking/networking-services).
+
+[todo: Add an example of Kubernetes Dashboard configuration and access with LB]
 
 ## Rationale
 
-Alternatively, the [K3s config file](https://docs.k3s.io/installation/configuration#configuration-file) can be used to pass custom K3s configurations to a target system. This approach simplifies the process, as additional configurations can be directly copied to a file under `/etc/rancher/k3s/config.yaml.d/`, eliminating the need for cloud-init conversion. However, using a cluster template instead of a raw K3s configuration file offers several advantages:
+For K3s configurability, the [K3s config file](https://docs.k3s.io/installation/configuration#configuration-file) can be used to pass custom K3s configurations to a target system instead of the CAPI provider-based approach. K3s config file method may simplify the process by allowing additional configurations to be directly copied to a file under `/etc/rancher/k3s/config.yaml.d/`, not requiring the need for cloud-init conversion. 
 
-- **Enhanced Flexibility**: The cluster template supports advanced configurations that go beyond native K3s configuration capabilities. These include pre- and post-installation commands and the ability to create supplementary files. Such features are particularly useful for tasks like configuring proxies or customizing containerd settings, as demonstrated in EMF-managed edges.
+However, using a CAPI provider based approach offers several advantages:
+
+- **Enhanced Flexibility**: The template supports advanced configurations that go beyond native K3s configuration capabilities. These include pre- and post-installation commands and the ability to create supplementary files. Such features are particularly useful for tasks like configuring proxies or customizing containerd settings, as demonstrated in EMF-managed edges.
 - **Consistency**: It ensures a uniform configuration approach, providing consistent user experience when transitioning EMT-S edge to an EMF-managed edge in the future.
 - **Extensibility**: The cluster template design is more scalable, enabling support for other Kubernetes distributions compatible with the Cluster API (CAPI).
 
@@ -184,11 +260,14 @@ Edge Microvisor Toolkit Standalone
 
 ## Implementation plan
 
-[A description of the implementation plan, who will do them, and when.
-This should include a discussion of how the work fits into the product's
-quarterly release cycle.]
+## Test plan
 
-## Open issues (if applicable)
+## Open issues
 
-[A discussion of issues relating to this proposal for which the author does not
-know the solution. This section may be omitted if there are none.]
+Introducing a CLI tool to replace the current Makefile and multiple shell scripts can further improve user experience. The CLI can provide a unified interface with subcommands for common tasks, including but not limited to:
+
+- **Build Installer**: Simplify the process of building the EMT-S installer by encapsulating all necessary steps into a single command.
+- **Create Bootable USB**: Automate the creation of a bootable USB drive with the required configurations, reducing manual intervention.
+- **Get Kubeconfig**: Retrieve the `kubeconfig` file from the EMT-S machine and optionally update it with the external IP address for seamless access to the Kubernetes API.
+
+This can be considered in future releases.
