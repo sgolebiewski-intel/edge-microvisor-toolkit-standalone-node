@@ -1,7 +1,7 @@
+#!/bin/bash
 # SPDX-FileCopyrightText: (C) 2025 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
-#!/bin/bash
 
 RKE_INSTALLER_PATH=/"${1:-/tmp/rke2-artifacts}"
 # for basic testing on a coder setup
@@ -36,8 +36,6 @@ kube-apiserver-arg:
 service-cidr: "10.43.0.0/16"
 kubelet-arg:
   - "topology-manager-policy=best-effort"
-  - "cpu-manager-policy=static"
-  - "reserved-cpus=1"
   - "max-pods=250"
   - "tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
 protect-kernel-defaults: true
@@ -96,7 +94,7 @@ EOF'
 
 # Install RKE2
 echo "$(date): Installing RKE2 2/13" | sudo tee -a /var/log/cluster-init.log | sudo tee /dev/tty0
-sudo INSTALL_RKE2_ARTIFACT_PATH=${RKE_INSTALLER_PATH} sh install.sh
+sudo INSTALL_RKE2_ARTIFACT_PATH="${RKE_INSTALLER_PATH}" sh install.sh
 
 # Copy the cni tarballs
 echo "$(date): Copying images and extensions 3/13" | sudo tee -a /var/log/cluster-init.log | sudo tee /dev/tty0
@@ -126,7 +124,7 @@ until sudo -E KUBECONFIG=/etc/rancher/rke2/rke2.yaml /var/lib/rancher/rke2/bin/k
 echo "$(date): RKE2 started 6/13" | sudo tee -a /var/log/cluster-init.log | sudo tee /dev/tty0
 # Label node as a worker
 hostname=$(hostname | tr '[:upper:]' '[:lower:]')
-sudo -E KUBECONFIG=/etc/rancher/rke2/rke2.yaml /var/lib/rancher/rke2/bin/kubectl label node $hostname node-role.kubernetes.io/worker=true
+sudo -E KUBECONFIG=/etc/rancher/rke2/rke2.yaml /var/lib/rancher/rke2/bin/kubectl label node "$hostname" node-role.kubernetes.io/worker=true
 
 # Wait for the deployment to complete
 
