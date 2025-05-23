@@ -11,8 +11,9 @@ on Linux-based operating systems. This capability opens up several avenues for c
 - USB-Based Provisioning: Improve and optimize the process for creating bootable USB drives and
 develop tools and scripts that streamline the provisioning of the Standalone Node
 
-- Feature Development: Innovate by adding new features or enhancing existing microvisor image to support more complex use cases.
-Kubernetes RKE2 clusters along with cluster extensions to enhance scalability, manageability, and orchestration capabilities
+- Feature Development: Innovate by adding new features or enhancing existing microvisor image to support
+more complex use cases. Kubernetes RKE2 clusters along with cluster extensions to enhance
+scalability, manageability, and orchestration capabilities
 
 - Empowerment for Enterprise Customers and Developers: Provides the tools and infrastructure needed to explore and
 implement Edge AI solutions, empowering users
