@@ -10,11 +10,13 @@ integrated with Kubernetes and foundational extensions, enabling the deployment 
 
 Key Features:
 
-- **Edge Optimized Immutable Toolkit**: The Edge Microvisor Toolkit is specifically optimized for edge environments, ensuring robust performance on Intel Architecture-based platforms and security.
-- **Kubernetes Integration**: Seamlessly deploy and manage applications using Kubernetes and cloud-native tools.
-- **Foundational Extensions**: These extensions support the deployment of diverse application types, including both modern cloud-native and traditional VM-based applications.
+- Edge Optimized Immutable Toolkit: The Edge Microvisor Toolkit is specifically optimized for edge environments, ensuring robust
+performance on Intel Architecture-based platforms and security.
+- Kubernetes Integration: Seamlessly deploy and manage applications using Kubernetes and cloud-native tools.
+- Foundational Extensions: These extensions support the deployment of diverse application types, including both modern cloud-native and traditional VM-based applications.
 
-Upon completion of the evaluation using the Edge Microvisor Toolkit Standalone Node solution, designed to enable Edge AI applications evaluation on Intel platforms customers will gain critical insights into the capabilities of edge platforms and Edge AI applications. This knowledge is essential for deploying use-case-specific applications and will significantly aid in scaling out deployments.
+Upon completion of the evaluation using the Edge Microvisor Toolkit Standalone Node solution, designed to enable
+Edge AI applications evaluation on Intel platforms customers will gain critical insights into the capabilities of edge platforms and Edge AI applications. This knowledge is essential for deploying use-case-specific applications and will significantly aid in scaling out deployments.
 
 ## How It Works
 
