@@ -26,7 +26,7 @@ Once the edge node is up and running, the customer evaluates various Edge AI app
 
 System requirements for the hardware and software requirements Edge Microvisor Toolkit Standalone Node is designed to support all Intel® platforms with the latest Intel® kernel to ensure all features are exposed and available for application and workloads. The microvisor has been validated on the following platforms.
 
-![How it works](images/howitworks.png)  
+![How it works](images/howitworks.png)
 
 ### System Requirements
 
