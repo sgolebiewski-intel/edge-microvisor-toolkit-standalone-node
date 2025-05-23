@@ -32,6 +32,11 @@ to the Edge Microvisor Toolkit Standalone Node repository:
 
 ![Contribution Flow](submit-changes.drawio.png)
 
+## Release Cadence
+
+The Edge Microvisor Toolkit Standalone Node follows a regular release schedule, with updates every 6 weeks.
+Contributions are reviewed and integrated based on priority and alignment with upcoming releases.
+
 ## Contribution license
 
 Since Edge Microvisor Toolkit Standalone Node is open source, by contributing to the project, you agree that
