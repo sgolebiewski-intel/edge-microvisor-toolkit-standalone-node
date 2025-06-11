@@ -121,7 +121,7 @@ This document explains the procedure to create a bootable USB device for Standal
 
       - Install Usbip tools:
 
-        ```
+        ```bash
         sudo apt install linux-tools-virtual hwdata
         sudo update-alternatives --install /usr/local/bin/usbip usbip `ls /usr/lib/linux-tools/*/usbip | tail -n1` 20
         sudo modprobe vhci-hcd
@@ -129,20 +129,28 @@ This document explains the procedure to create a bootable USB device for Standal
 
       - Run the following command:
 
-        ```shell
-        usbipd attach --remote=<IPv4 address of host> --busid=<busid for USB Drive>
+        ```bash
+        usbip attach --remote=<IPv4 address of host> --busid=<busid for USB Drive>
         ```
 
    **Now, the USB drive will be mounted in Ubuntu.**
 
-   > **Note**: If the system reboots, the USB device attachment is lost. You can either
-     re-attach it after Ubuntu has restarted, or configure the OS to
-     [automatically re-attach the device](https://wiki.archlinux.org/title/USB/IP#Binding_with_systemd_service).
+   > **Note**:
+   >
+   > * If the system reboots, the USB device attachment is lost. You can either
+   >   re-attach it after Ubuntu has restarted, or configure the OS to
+   >   [automatically re-attach the device](https://wiki.archlinux.org/title/USB/IP#Binding_with_systemd_service).
+   > * To quickly obtain the IPv4 address of your host machine, start *Command Prompt*,
+   >   and run the following command:
+   >
+   >   ```shell
+   >   ping <name-of-your-computer> -4
+   >   ```
 
 
 6. In the Ubuntu terminal, verify if the attached USB drive is listed:
 
-   ```shell
+   ```bash
    lsusb
    ```
 
