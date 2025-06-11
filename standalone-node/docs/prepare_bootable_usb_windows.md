@@ -104,7 +104,7 @@ This document explains the procedure to create a bootable USB device for Standal
       It will ask for the username and password you set previously. Upon successful login,
       the Ubuntu terminal will open.
 
-   b. (Hyper-V) Run Hyper-V Manager, and right click your VM and select *Connect...*.
+   b. (Hyper-V) Run Hyper-V Manager, right click your VM, and select *Connect...*.
       Select *Start*.
 
 
