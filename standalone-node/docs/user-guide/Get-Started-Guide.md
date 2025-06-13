@@ -24,20 +24,13 @@ cd edge-microvisor-toolkit-standalone-node
 
 #### 1.2: Create the Standalone Installation Tar File
 
-Use the command below to generate the `sen-installation-files.tar.gz` installation file which
+Use the command below to generate the `standalone-installation-files.tar.gz` installation file which
 includes a build of EMT-µOS and all required components for preparing a bootable USB device.
 The file will be located  in the `$(pwd)/installation-scripts/out` directory.
 
 ```bash
 sudo make build
 ```
-
-##### 1.4.1: Include Edge Microvisor Toolkit (µOS) Build
-
-A minimal build of the Edge Microvisor Toolkit OS has been introduced to replace the HookOS.
-For more information on this system, refer to this [article](./get-started-guide/installation-with-emt-tink).
-
-
 
 #### 1.5:  Prepare the USB Drive
 
@@ -65,10 +58,10 @@ For more information on this system, refer to this [article](./get-started-guide
 
 - Copy the installation tar file to developer system to prepare the Bootable USB
 
-  Extract the contents of `sen-installation-files.tar.gz`.
+  Extract the contents of `standalone-installation-files.tar.gz`.
 
   ```bash
-   tar -xzf sen-installation-files.tar.gz
+   tar -xzf standalone-installation-files.tar.gz
   ```
 
 
