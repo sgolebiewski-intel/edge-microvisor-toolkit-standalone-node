@@ -1,79 +1,46 @@
-# Edge Microvisor Toolkit Tink
+# Edge Microvisor Toolkit Tink (µOS)
 
-*? What is the official name?*
+Edge Microvisor Toolkit Tink (µOS) image is built from the same baseline same as other OS images.
+IT has been introduced to replace HookOS in the build workflow, which was used in the 3.0
+release.
 
-* Edge Microvisor Toolkit Tink Minimal
-* Edge Microvisor Toolkit Tink Micro (µOS) *? Needs clarification*
-
-## Overview
-
-*? Needs clarification*
-
-### How it works
-
-*? Needs clarification*
-
-### Key features
-
-*? Needs clarification*
-
-
-## System Requirements
-
-**Supported Hardware**
-
-* Xeon, Core Ultra, Core and Atom processors
-
-## Get Started
-
-Download the OS image *? Needs a link*
-
-or build, using the instructions below.
-
-
-## Build the OS image
-
-EMT-Tink image is built from EMT baseline same as other EMT images and generates a rootfs.tar.gz file.
-
-A bash script generate-tink-initramfs.sh is provided in EMT baseline which could be used to generated the required initramfs and vmlinuz images to be used in place of HookOS images.
-[Source](https://github.com/open-edge-platform/edge-microvisor-toolkit/blob/3.0/toolkit/imageconfigs/scripts/generate-tink-initramfs.sh)
-
-Usage example:
+The main [generate-tink-initramfs.sh](https://github.com/open-edge-platform/edge-microvisor-toolkit/blob/3.0/toolkit/imageconfigs/scripts/generate-tink-initramfs.sh) bash script provided in the Edge Microvisor Toolkit baseline is called to generate the 
+required `initramfs` and `vmlinuz` images to be used in place of HookOS images. For more details, see the usage example below:
 
 ```bash
 sudo toolkit/imageconfigs/scripts/generate-tink-initramfs.sh \
   -f <emt-tink.tar.gz> -o <output_images_dir>
 ```
 
-where
-<emt-tink.tar.gz> is the rootfs tar.gz generated from EMT-Tink build
-<output_images_dir> is the folder where output vmlinuz/initramfs files to be placed
+The <emt-tink.tar.gz> is the "rootfs.tar.gz" generated from the µOS build.
+The <output_images_dir> is the folder where output `vmlinuz`/`initramfs` files will be placed
 
-generate-tink-initramfs.sh script should be called by EMT-Tink build CI to generate required vmlinuz and initramfs images to be picked up for HookOS replacement.
+The generated images can then be use for
+[Edge Manageability Framework](#edge-manageability-framework-emf-specific-builds) or
+[Edge Microvisor Toolkit Standalone Node](#edge-microvisor-toolkit-standalone-node-specific-builds)
+builds for implementing required customizations.
 
-The generated images can then be picked up for EMF orchestrator or EMT-S build for injecting required customizations.
-
-To boot with EMT-Tink vmlinuz and initramfs images, the following additional kernel parameters will be required:
+To boot with the `vmlinuz` and `initramfs` images, the following additional kernel
+parameters will be required:
 
 ```text
 root=tmpfs rootflags=mode=0755 rd.skipfsck noresume modules-load=nbd
 ```
 
-## EMF Specific Builds
+## Edge Manageability Framework and Edge Microvisor Toolkit Standalone Node Workflows
 
-
-
-A full description of EMF build flow reflecting the **emf_build_flow.png** diagram
+EMT-Tink is targeted for use in Edge Manageability Framework and Edge Microvisor Toolkit
+Standalone Node workflows with a common set of built images. The diagram below shows
+primary components in EMT-Tink (device-discovery, tink-worker) required for EMF provisioning is being built as rpms (sources from opensource) and included in EMT-Tink image output tar.gz file using standard EMT image build process.
+The EMT-Tink image output file can then be transformed into initramfs and vmlinuz images required to boot as transitionary OS during EMF and EMT-S provisioning flows.
+The generated initramfs and vmlinuz images are then utilized in EMF and EMT-S image builds during which edge node provisioning specific customizations are then included together with provided images to generate the final signed images which would be used during EMF and EMT-S provisioning
 
 See the diagram for more details:
 
-![emf_build_flow](./emf_build_flow.png)
+![emf_build_flow](../../../images/emf_build_flow.png)
 
 
-Add a comparison table/diagram
-EMF Builds with HookOS vs. EMF Build with EMT-Tink
-
-### EMF Build with HookOS (current workflow)
+### EMF Build with HookOS (previous workflow)
 
 In current EMF with hookOS, the following are built directly into HookOS image to generate EMF customized HookOS initramfs and vmlinuz images:
 
@@ -84,12 +51,12 @@ In current EMF with hookOS, the following are built directly into HookOS image t
 Generated customized HookFS initramfs and vmlinuz images are then downloaded to edge node over PXE boot.
 HookOS pulls tink worker container image after booting to start running Tinkerbell workflow. In HookOS case, tink worker is a container which runs other containers in a docker-in-docker scenario.
 
-### EMF Build with EMT-Tink (**new workflow**)
+### EMF Build with EMT-Tink (new workflow)
 
 With EMT-Tink, caddy, fluent-bit, device discovery agent and tink worker are run as native systemd services in EMT OS.
 
 Caddy and fluent-bit are existing rpm packages which are included in EMT-Tink.
-Device discovery agent from EMF infra-onboarding github is build as rpm package to run as systemd service and included in EMT-Tink image: [PR](https://github.com/open-edge-platform/edge-microvisor-toolkit/pull/118)
+[Device discovery agent](SPECS/device-discovery/device-discovery.spec) from EMF infra-onboarding github is build as rpm package to run as systemd service and included in the image:
 
 tink worker is built as rpm to run as systemd service and included in EMT-Tink image: [PR](https://github.com/open-edge-platform/edge-microvisor-toolkit/pull/106)
 tink worker in EMT-Tink is also patched such that it directly runs containers via using containerd only, without dependency on docker and avoiding docker-in-docker use case.
@@ -103,40 +70,24 @@ EMF orchestrator build will need adjustments to inject the following into EMT-Ti
 - Environment configuration file
 - Cert files
 
-## EMT-S Specific Builds
+## Edge Microvisor Toolkit Standalone Node Specific Builds
 
-*? Suggestion for content:*
+### Standalone Node Build with HookOS (previous workflow)
 
-A full description of EMT-S build workflow. Presented in a diagram below.
+In Edge Microvisor Toolkit Standalone Node, current HookOS sources, separate from that used in
+Edge Manageability Framework, are being used to generate required Hook OS images used in the
+installer. Edge Microvisor Toolkit Standalone Node OS
+[installer scripts](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/hook_os/files/install-os.sh) are built into the OS image and set up to run automatically in bash on boot.
 
-See the diagram for more details:
+Generated customized HookOS `initramfs` and `vmlinuz` are then used to generate EMT-S required iso for usb installer.
 
-![emt_s_build_flow](../../../images/emts_s_build_flow.png)
+### Standalone Node Build with µOS (new workflow)
 
-Add a comparison table *? Can we add such a table to show the differences?*
-EMT-S Builds with HookOS vs. EMT-S Build with EMT-Tink
-
-
-### EMT-S build with hookOS
-
-In EMT-Standalone, current separate HookOS sources from that used in EMF build is being used to generate required Hook OS images used in EMT-S installer.
-EMT-S OS installer scripts are built into this EMT-S HookOS image and and setup to auto run in bash on boot. [Ref](https://github.com/intel-innersource/frameworks.edge.one-intel-edge.edge-node.standalone-edge-node/blob/main/hook_os/files/install-os.sh)
-
-Generated customized HookOS initramfs and vmlinuz are then used to generate EMT-S required iso for usb installer.
-
-### EMT-S build with EMT-Tink (**new workflow**)
-
-For this case, the same approach as being done with Hook OS will be used.
+For this case, the same approach as being done with HookOS will be used.
 
 EMT-S build will need adjustments to make the following changes into EMT-Tink initramfs before generate final iso for usb installer.
 
-- include pkgs efibootmgr / gawk / lvm2 / net-tools / parted for EMT-S *? Needs clarification. What are the steps/respective commands?*
+- include pkgs efibootmgr / gawk / lvm2 / net-tools / parted for EMT-S
 - inject required EMT-S OS installer bash scripts and systemd service to run it as service
 - disable tink worker, caddy, fluent-bit, device discovery agent services
-
-*? Needs clarification*
-
-
-
-
 
