@@ -113,7 +113,7 @@ fi
 # Ask the password from cmd line 
 echo -n "Please Set the Password for $user_name: "
 stty -echo
-read password
+read -r password
 stty echo
 echo 
 
@@ -123,8 +123,7 @@ chmod 600 "$(pwd)/.psswd"
 
 # Validate the custom-cloud-init section
 if ! dpkg -s python3 > /dev/null 2>&1; then
-    apt install -y python3 > /dev/null 2>&1
-    if [ "$?" -ne 0 ]; then
+    if ! apt install -y python3 > /dev/null 2>&1; then
         echo "Pyhon installation failed,please check!!"
     fi
 fi
@@ -132,7 +131,7 @@ CONFIG_FILE="config-file"
 START_MARKER="^services:"
 
 # Extract YAML content from custom cloud-init-section
-# if any error,throw the erros  
+# if any error,throw the errors  
 YAML_CONTENT=$(awk "/$START_MARKER/ {found=1} found" "$CONFIG_FILE")
 
 # Validate using Python
@@ -154,14 +153,15 @@ try:
                     print(f"Invalid runcmd item: {item!r}")
                     sys.exit(1)
     else:
-	    print("")
+        print("")
 except yaml.YAMLError as e:
     print("Custom cloud-init YAML is invalid:\n", e)
     sys.exit(1)
 '
 # Catch the Error
+# shellcheck disable=SC2181
 if [ "$?" -ne 0 ]; then
-    echo "Custome cloud-init file is not valiad,Please check!!"
+    echo "Custom cloud-init file is not valid,Please check!!"
     exit 1
 fi
 
@@ -340,7 +340,7 @@ copy_files() {
         echo "Custom files copied!"
     fi
     # Remove the hidden password file
-    rm -rf $(pwd)/.psswd
+    rm -rf "$(pwd)/.psswd"
 }
 copy_user_apps() {
     echo "Copying user-apps to USB device..."
@@ -350,23 +350,21 @@ copy_user_apps() {
             USER_APPS_PART="p$USER_APPS_PART"
         fi
         check_mnt_mount_exist
-        mount ${USB_DEVICE}${USER_APPS_PART} /mnt
+        mount "${USB_DEVICE}${USER_APPS_PART}" /mnt
         # Use rsync for fater copr
-        if dpkg -s rsync; then 
-            rsync -ah --inplace user-apps /mnt/
-            if [ "$?" -eq 0 ]; then 
+        if dpkg -s rsync; then
+            if rsync -ah --inplace user-apps /mnt/; then 
                 echo "user-apps data copied successfully"
             else
-                echo "user-apps data failes to copy please check!!"
+                echo "user-apps data fails to copy please check!!"
                 umount /mnt
                 exit 1
             fi
-        else 
-            cp -r user-apps /mnt
-            if [ "$?" -eq 0 ]; then
+        else             
+            if cp -r user-apps /mnt; then
                 echo "user-apps data copied successfully"
             else
-                echo "user-apps data failes to copy please check!!"
+                echo "user-apps data fails to copy please check!!"
                 umount /mnt
                 exit 1
             fi
