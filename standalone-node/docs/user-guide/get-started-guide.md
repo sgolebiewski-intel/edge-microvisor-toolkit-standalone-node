@@ -17,24 +17,23 @@ Kubernetes web dashboard.
 
 ## Standalone Node Provisioning
 
-### Create a bootable USB drive from Source Code
+### Create a Bootable USB Drive Using Source Code
 
-On Linux operating systems, you can create a bootable USB drive using source code. This section
-provides step-by-step instructions to set up the environment required for USB-based provisioning
-of the standalone node.
-
-To meet specific needs of edge deployment, Edge Microvisor Toolkit Standalone Node can be
-built as one of available OS image versions:
+You can create a bootable USB drive using source code and a selected version of
+Edge Microvisor Toolkit Standalone Node:
 
 - Edge Microvisor Toolkit Non-RT (standard kernel)
-- Edge Microvisor Toolkit RT (real-time kernel)
 - Edge Microvisor Toolkit Desktop Virtualization
+- Custom immutable Edge Microvisor Toolkit created using 
+  [Edge Microvisor Toolkit Developer Node](https://github.com/open-edge-platform/edge-microvisor-toolkit/blob/3.0/docs/developer-guide/get-started/emt-building-howto.md)
 
-You can create a bootable USB drive with a selected image. For most use cases, the default
-non-RT one is recommended.
+> **Note:** Make sure to update `config-file` according to the requirements of the custom
+> Edge Microvisor Toolkit immutable image.
 
-The diagram below illustrates the steps involved in the USB-based provisioning of the
-standalone node.
+You can download or re-use your own custom EMT image and replace the default EMT image
+in the installer directory before creating the bootable USB drive.
+
+See the diagram below to learn how USB-based provisioning of the standalone node works.
 
 ```mermaid
 flowchart TD
@@ -45,11 +44,12 @@ flowchart TD
    C --> D[Create a bootable USB drive]
    D --> E[Plug the USB drive into the edge node and install]
    E --> F[Start using your edge node for AI apps or other use cases]
-
-   B -- "RT or Desktop Virtualization" --> I[Refer to the cloud-init
+   B -- "Desktop Virtualization or custom image" --> G[Download your preferred image]
+   G --> H[Replace the default raw image in the installer directory]
+   H --> I[Refer to the cloud-init
    configuration article and update the config-file with your settings]
-   I --> J[Create a bootable USB drive]
-   J --> K[Plug the USB drive into the edge node and install]
+   I --> J[Create a bootable USB drive using the installer]
+   J --> K[Plug the USB into the edge node and install]
    K --> L[Start using your edge node for your specific use case]
 ```
 
@@ -204,18 +204,23 @@ meet specific edge deployment needs. You can choose from:
 
 - **Edge Microvisor Toolkit Non-RT image** (default)
 - **Edge Microvisor Toolkit Desktop Virtualization image**
+- **Customized immutable Edge Microvisor Toolkit created using "Edge Microvisor Toolkit Developer Node"**
 
 ##### Option 1: Using the Default Non-RT Image
 
 If you opt for the default non-RT image, which is suggested for the majority of Edge AI applications,
 there is no need for further image setup. The `usb-bootable-files.tar.gz` installer includes this image.
 
-##### Option 2: Using Desktop Virtualization Images
+##### Option 2: Using Desktop Virtualization or Custom created image
 
 If you need Desktop Virtualization features, follow these steps to replace the default image:
 
 1. Download the desktop virtualization image (DV) from the "no Auth" file server registry.
-2. Replace the default EMT image with the EMT DV image. The
+
+   > **Note:** A custom image can be copied locally from your development system to the 5th
+   > partition, as shown in **Step 2** below.
+
+2. Replace the default EMT image with the EMT DV image or custom image. The
    default EMT image is located at the 5th partition of the
    bootable USB drive created in the previous step.
    Follow these steps to replace the image:
@@ -233,10 +238,11 @@ If you need Desktop Virtualization features, follow these steps to replace the d
    # Remove the older image (backup first if needed).
    sudo rm -f <old-image-file>
 
-   # Download the new DV image you want to provision
+   # For Desktop Virtualization image: Download from registry.
    sudo wget <your-dv-image-url> -O <new-image-file>
-   # or copy from a local directory:
-   # sudo cp /path/to/your/new-image.raw ./
+  
+   # For Custom created image: Copy from a local directory to the 5th partition.
+   sudo cp /path/to/your/custom-image.raw ./
 
    # Unmount the partition.
    cd /
@@ -407,8 +413,9 @@ refer to [emt-update-guide](emt-update-guide.md).
 
 2. **Issues while provisioning the microvisor**
 
-   Logs are automatically collected in the `/var/log/os-installer.log`. If any issues occur
-   while provisioning the microvisor, use it to identify causes of failures.
+   If you encounter issues during provisioning the microvisor with EMT Bootkit, you can login
+   as root, using `chroot` to check the `/var/log/os-installer.log` file
+   for detailed error messages and troubleshooting information.
 
 3. **Installation status banner**
 
