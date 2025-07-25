@@ -20,9 +20,6 @@ extensions, which enables deployment of both cloud-native and legacy VM-based ap
   cloud-native tools.
 - **Foundational Extensions:** These extensions support the deployment of diverse application
   types, including both modern cloud-native as well as traditional VM-based applications.
-- **Real-Time Extensions:** The
-  [RT version of Edge Microvisor Toolkit](https://github.com/open-edge-platform/edge-microvisor-toolkit/blob/3.0-dev/docs/developer-guide/emt-architecture-overview.md#kernel-with-real-time-extensions-and-integrated-docker-and-k3s)
-  supports workloads processing real-time data streams.
 - **Easy Evaluation:** The Edge Microvisor Standalone Node allows for critical insights into
   the capabilities of Edge AI solutions, which is beneficial for deployments of
   use-case specific applications and potential scale outs.
@@ -34,22 +31,14 @@ The Edge Microvisor Toolkit Standalone Node solution is engineered to support a 
 range of Intel® platforms, ensuring compatibility and optimal performance. Below is a
 detailed summary of the supported processor families and system requirements:
 
-### Supported Processors
+### Supported CPU Processors
 
-- **CPU**:
+| Processor Family            | Supported Models                                                                |
+|-----------------------------|---------------------------------------------------------------------------------|
+| **Intel Atom® Processors**  | Intel® Atom® X Series                                                           |
+| **Intel® Core™ Processors** | 12th Gen Intel® Core™, 13th Gen Intel® Core™, Intel® Core™ Ultra (Series 1)     |
+| **Intel® Xeon® Processors** | 5th Gen Intel® Xeon® SP, 4th Gen Intel® Xeon® SP, 3rd Gen Intel® Xeon® SP       |
 
-  | Processor Family            | Supported Models                                                                |
-  |-----------------------------|---------------------------------------------------------------------------------|
-  | **Intel Atom® Processors**  | Intel® Atom® X Series                                                           |
-  | **Intel® Core™ Processors** | 12th Gen Intel® Core™, 13th Gen Intel® Core™, Intel® Core™ Ultra (Series 1)     |
-  | **Intel® Xeon® Processors** | 5th Gen Intel® Xeon® SP, 4th Gen Intel® Xeon® SP, 3rd Gen Intel® Xeon® SP       |
-
-- **Discrete GPU**:
-
-  |        Intel®         |           NVIDIA®             |
-  |-----------------------|-------------------------------|
-  | Intel® Arc™ B580      | NVIDIA® Tesla® P100           |
-  |                       | GeForce RTX™ 3090             |
 
 ### Memory, Storage and Networking Requirements
 
