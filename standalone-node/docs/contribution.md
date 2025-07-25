@@ -15,9 +15,8 @@ on Linux-based operating systems. This capability opens up several avenues for c
   more complex use cases. Kubernetes K3s clusters along with cluster extensions to enhance
   scalability, manageability, and orchestration capabilities.
 
-- **Empowerment for Enterprise Customers and Developers:** Provides the tools and infrastructure needed to explore and
-  implement Edge AI solutions, empowering users
-  to leverage Intel's architecture for advanced edge computing applications.
+- **Empowerment for Enterprise Customers and Developers:** Use the provided tools and infrastructure to explore and
+  implement Edge AI solutions; leverage Intel's architecture for using advanced edge computing applications.
 
 ## New Features
 
