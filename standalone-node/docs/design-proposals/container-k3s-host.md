@@ -11,8 +11,8 @@ Last updated: 03/06/2025
 
 ## Abstract
 
-The Edge Microvisor Toolkit Standalone (EMT-S) provides a simplified deployment of an edge
-node. There are use cases where customers would like to manage container orchestration without
+The Edge Microvisor Toolkit Standalone (EMT-S) provides simplified edge node deployment.
+There are use cases where customers would like to manage container orchestration without
 Kubernetes and deploy native container apps.
 
 To accommodate this use case, the toolkit will support container runtime and kubernetes installer as part of the same
@@ -20,7 +20,7 @@ immutable image.
 
 ## Proposal
 
-To deploy the standalone node, user needs to configure settings in
+To deploy the standalone node, user needs to configure settings in the
 [config-file](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/installation_scripts/config-file),
 required for creation of a bootable USB drive.
 

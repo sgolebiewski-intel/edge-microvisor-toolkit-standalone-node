@@ -6,7 +6,7 @@ Last updated: 04/06/2025
 
 ## Abstract
 
-The Edge Microvisor Toolkit Standalone Node (EMT-S) ensures a simplified deployment of an edge node.
+The Edge Microvisor Toolkit Standalone Node (EMT-S) ensures simplified edge node deployment.
 There are use cases where customers would like their own custom image of EMT to be deployed and
 configured as part of the provisioning.
 
@@ -16,7 +16,7 @@ users to update before creating a bootable USB drive. The configuration section 
 
 ## Proposal
 
-To deploy the standalone node, user needs to configure settings in
+To deploy the standalone node, user needs to configure settings in the
 [config-file](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/installation_scripts/config-file),
 required for creation of a bootable USB drive.
 
@@ -48,8 +48,8 @@ services:
 
 # === Create custom configuration files ===
 # To create a file, specify its path,permission and content.
-# Note : you can create as many files(shell,text,yaml) as you wish,just expand the write_files: with prefix -path for next file
-# Note : Make sure scripts/files passing to cloud-init file well tested,if any issues in the script/file error messages
+# Note : you can create as many files (shell,text,yaml) as you wish, just expand the write_files: with prefix -path for next file
+# Note : Make sure scripts/files passing to cloud-init file well tested, if any issues in the script/file error messages
 #        will be present under /var/log/cloud-init-output.log file on EMT image.
 # Example:
 #   write_files:
@@ -62,7 +62,7 @@ write_files: []
 
 # === Custom run commands ===
 # List commands or scripts to run at boot.
-# Note : Make sure syntax is correct for the commands,if any issues in commands error messages will be present
+# Note : Make sure syntax is correct for the commands, if any issues in commands error messages will be present
 #        under /var/log/cloud-init-output.log file on EMT image.
 # Example:
 #   runcmd:

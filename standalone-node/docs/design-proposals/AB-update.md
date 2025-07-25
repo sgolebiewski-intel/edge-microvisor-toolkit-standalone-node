@@ -15,10 +15,10 @@ delivered without requiring end users to reinstall their software.
 ## Proposal
 
 The immutable EMT image is updated with a new image version at the image level.
-It will require creation of two read-only partitions: the A and B partitions. The A partition will be persistent
-and keep the original EMT image installation. The B partition will be used to install a new EMT image.
-Depending on the status of the update, the EMT will boot from the new partition (B) or
-roll back to the original partition (A) in case of a failure.
+It will require creation of two read-only partitions: **A** and **B**. The **A** partition will be persistent
+and keep the original EMT image installation. The **B** partition will be used to install a new EMT image.
+Depending on the status of the update, the EMT will boot from the new partition (**B**) or
+roll back to the original partition (**A**) in case of a failure.
 
 ## Rationale
 
@@ -116,7 +116,7 @@ Following tests have been planned to verify this feature:
 
 1. Update the edge node with the latest version of the EMT image.
 2. Update the edge node with the older version of the EMT image.
-3. Provision the EN with a specific profile (EMT Non-RT) that includes K3s and Docker,
+3. Provision the edge node with a specific profile (EMT Non-RT) that includes K3s and Docker,
    and then update the EMT image.
 4. Test the system's ability to handle unexpected or incorrect EMT image versions and its
    fallback mechanism

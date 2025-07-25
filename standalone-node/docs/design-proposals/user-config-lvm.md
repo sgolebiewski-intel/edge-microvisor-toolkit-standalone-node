@@ -17,7 +17,7 @@ This change increases adaptability and ensures optimal utilization of available 
 
 ## Proposal
 
-To deploy the standalone node, user needs to configure settings in
+To deploy the standalone node, user needs to configure settings in the
 [config-file](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/installation_scripts/config-file),
 required for creation of a bootable USB drive.
 
@@ -25,7 +25,7 @@ The proposal is to improve the current configuration mechanism by allowing users
 if only a single disk is present on the edge node. to maximize disk size for the persistent partition.
 If multiple disks are present, the LVM partition will be created on secondary disks (other than the rootfs disk).
 
-The following script can be used as a new section in config-file:
+The following script can be used as a new section in the config-file:
 
 ```bash
 # ------------------ LVM partition size ------------------------
@@ -41,8 +41,8 @@ lvm_size_ingb="0"
 ## User Experience
 
 When [creating a bootable USB drive](../user-guide/get-started-guide.md#create-bootable-usb-from-source-code),
-for a single disk edge node, you need set the desired LVM partition size in
-[the config file](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/installation_scripts/config-file).
+for a single disk edge node, you need set the desired LVM partition size in the
+[config file](https://github.com/open-edge-platform/edge-microvisor-toolkit-standalone-node/blob/main/standalone-node/installation_scripts/config-file).
 On boot, the LVM partition is set to the specified size and the EMT host is provisioned accordingly.
 
 ## Default Behavior

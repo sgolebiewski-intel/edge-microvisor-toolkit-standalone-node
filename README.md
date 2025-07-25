@@ -31,7 +31,7 @@ The Edge Microvisor Toolkit Standalone Node solution is engineered to support a 
 range of Intel® platforms, ensuring compatibility and optimal performance. Below is a
 detailed summary of the supported processor families and system requirements:
 
-### Supported CPU Processors
+### Supported CPUs
 
 | Processor Family            | Supported Models                                                                |
 |-----------------------------|---------------------------------------------------------------------------------|
